@@ -1,0 +1,2959 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>YOSHIHIRO ABIKO | Photography & Cinematography</title>
+
+    
+
+    <!-- Google Fonts -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Josefin+Sans:wght@300;400&family=Noto+Serif+JP:wght@300;400;500&display=swap" rel="stylesheet">
+
+    
+
+    <style>
+
+        /* CSS Variables */
+
+        :root {
+
+            --font-hero: 'Cormorant Garamond', serif;
+
+            --font-body: 'EB Garamond', 'Noto Serif JP', serif;
+
+            --font-label: 'Josefin Sans', sans-serif;
+
+            
+
+            /* Color Palette - Bright, gentle, low saturation */
+
+            --color-bg: #FCFBF9; /* オフホワイト */
+
+            --color-text: #33322E; /* 柔らかな墨色 */
+
+            --color-text-light: #7A7871;
+
+            --color-gold: #D2C4A7; /* 控えめなゴールド */
+
+            --color-gold-light: #EBE5D9;
+
+            
+
+            /* Spacing (全体的にコンパクトに調整) */
+
+            --space-xs: 0.5rem;
+
+            --space-sm: 1rem;
+
+            --space-md: 2rem;
+
+            --space-lg: 3.5rem;
+
+            --space-xl: 5rem;
+
+        }
+
+
+
+        /* Reset & Base */
+
+        * {
+
+            margin: 0;
+
+            padding: 0;
+
+            box-sizing: border-box;
+
+        }
+
+
+
+        html {
+
+            scroll-behavior: smooth;
+
+        }
+
+
+
+        body {
+
+            background-color: var(--color-bg);
+
+            color: var(--color-text);
+
+            font-family: var(--font-body);
+
+            line-height: 1.8;
+
+            overflow-x: hidden;
+
+            transition: background-color 1s ease;
+
+        }
+
+
+
+        a {
+
+            text-decoration: none;
+
+            color: inherit;
+
+        }
+
+
+
+        ul {
+
+            list-style: none;
+
+        }
+
+
+
+        /* Typography */
+
+        h1, h2, h3, h4, h5, h6 {
+
+            font-weight: normal;
+
+        }
+
+
+
+        .text-label {
+
+            font-family: var(--font-label);
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.4em;
+
+            font-size: 0.8rem;
+
+        }
+
+
+
+        /* Navigation */
+
+        nav {
+
+            position: fixed;
+
+            top: 0;
+
+            left: 0;
+
+            width: 100%;
+
+            padding: 2.5rem 4vw;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            z-index: 100;
+
+            pointer-events: none; /* 下の要素へのクリックを貫通させる */
+
+        }
+
+
+
+        .nav-logo {
+
+            pointer-events: auto;
+
+            display: flex;
+
+            align-items: center;
+
+        }
+
+
+
+        .nav-logo img {
+
+            height: 45px; /* ロゴの高さ。お好みで調整してください */
+
+            width: auto;
+
+            transition: opacity 0.3s ease;
+
+        }
+
+
+
+        .nav-logo:hover img {
+
+            opacity: 0.7;
+
+        }
+
+
+
+        .nav-links {
+
+            display: flex;
+
+            gap: 3vw;
+
+            pointer-events: auto;
+
+        }
+
+
+
+        .nav-links li a {
+
+            position: relative;
+
+            padding-bottom: 5px;
+
+        }
+
+
+
+        .nav-links li a::after {
+
+            content: '';
+
+            position: absolute;
+
+            bottom: 0;
+
+            left: 0;
+
+            width: 100%;
+
+            height: 1px;
+
+            background-color: var(--color-gold);
+
+            transform: scaleX(0);
+
+            transform-origin: right;
+
+            transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+
+        }
+
+
+
+        .nav-links li a:hover::after {
+
+            transform: scaleX(1);
+
+            transform-origin: left;
+
+        }
+
+
+
+        /* Intersection Observer Fade In */
+
+        .fade-elem {
+
+            opacity: 0;
+
+            transform: translateY(40px);
+
+            transition: opacity 1.5s cubic-bezier(0.25, 1, 0.5, 1), transform 1.5s cubic-bezier(0.25, 1, 0.5, 1);
+
+            will-change: opacity, transform;
+
+        }
+
+
+
+        .fade-elem.is-visible {
+
+            opacity: 1;
+
+            transform: translateY(0);
+
+        }
+
+
+
+        /* Section Layouts */
+
+        section {
+
+            padding: var(--space-lg) 4vw;
+
+            position: relative;
+
+        }
+
+
+
+/* Hero Section */
+
+#hero {
+
+    height: 100vh;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    align-items: center;
+
+    padding: 0 4vw;
+
+    text-align: center;
+
+    position: relative;
+
+    overflow: hidden;
+
+}
+
+
+
+/* スライドショー背景 */
+
+.hero-bg {
+
+    position: absolute;
+
+    top: 0;
+
+    left: 0;
+
+    width: 100%;
+
+    height: 100%;
+
+    background-size: cover;
+
+    background-position: center;
+
+    opacity: 0;
+
+    transition: opacity 2s ease-in-out; /* ゆっくりとしたフェード（2秒） */
+
+    z-index: 1;
+
+}
+
+
+
+.hero-bg.is-active {
+
+    opacity: 1;
+
+}
+
+
+
+.hero-content {
+
+    position: relative;
+
+    z-index: 2; /* テキストを画像の上に配置 */
+
+}
+
+
+
+        .hero-title {
+
+            font-family: var(--font-hero);
+
+            font-size: clamp(2.5rem, 6vw, 5rem); /* サイズを少し小さく調整 */
+
+            letter-spacing: 0.15em;
+
+            line-height: 1.1;
+
+            margin-bottom: 2rem;
+
+            text-indent: 0.15em; /* センタリングの補正 */
+
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 40px rgba(255, 255, 255, 0.6); /* 視認性向上のための光彩 */
+
+        }
+
+
+
+        .hero-subtitle {
+
+            color: var(--color-text); /* 少し濃い色にして視認性アップ */
+
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.9), 0 0 20px rgba(255, 255, 255, 0.7); /* 白い光彩で視認性を確保 */
+
+            max-width: 600px;
+
+            margin: 0 auto;
+
+        }
+
+
+
+        /* About Section */
+
+        #about {
+
+            min-height: 80vh; /* 100vhから縮小して間延びを防止 */
+
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 5vw;
+
+            align-items: center;
+
+        }
+
+
+
+        .about-text {
+
+            padding-right: 10%;
+
+        }
+
+
+
+        .about-name {
+
+            font-family: var(--font-hero);
+
+            font-size: clamp(2rem, 3.5vw, 3rem);
+
+            margin-bottom: 0;
+
+            line-height: 1.2;
+
+        }
+
+
+
+        .about-name span {
+
+            font-family: var(--font-label);
+
+            font-size: 0.5em;
+
+            color: var(--color-text-light);
+
+            letter-spacing: 0.1em;
+
+            margin-left: 0.5rem;
+
+            text-transform: uppercase;
+
+        }
+
+
+
+        .about-role {
+
+            margin-bottom: 2rem; /* 少し縮小 */
+
+            display: block;
+
+        }
+
+
+
+        .about-title {
+
+            font-family: var(--font-hero);
+
+            font-size: clamp(1.8rem, 3vw, 3rem);
+
+            line-height: 1.2;
+
+            margin-bottom: var(--space-sm);
+
+        }
+
+
+
+        .about-desc {
+
+            font-size: 1.1rem;
+
+            color: var(--color-text-light);
+
+            margin-bottom: 1.5rem;
+
+        }
+
+        
+
+        .about-achievements {
+
+            margin-top: 2rem;
+
+            padding-top: 2rem;
+
+            border-top: 1px solid var(--color-gold-light);
+
+        }
+
+
+
+        .about-achievements li {
+
+            position: relative;
+
+            padding-left: 1.5rem;
+
+            margin-bottom: 0.8rem;
+
+            font-size: 0.95rem;
+
+            color: var(--color-text);
+
+            letter-spacing: 0.05em;
+
+        }
+
+
+
+        .about-achievements li::before {
+
+            content: '';
+
+            position: absolute;
+
+            left: 0;
+
+            top: 0.6rem;
+
+            width: 4px;
+
+            height: 4px;
+
+            border-radius: 50%;
+
+            background-color: var(--color-gold);
+
+            box-shadow: 0 0 4px rgba(210, 196, 167, 0.5); /* ほんのりと光る演出 */
+
+        }
+
+
+
+        .profile-bio {
+
+            margin-top: 3rem;
+
+            padding-top: 2rem;
+
+            border-top: 1px solid var(--color-gold-light);
+
+            font-size: 0.95rem;
+
+            color: var(--color-text);
+
+            line-height: 2;
+
+        }
+
+
+
+        .about-image-wrapper {
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+        }
+
+
+
+        .profile-img {
+
+            width: clamp(250px, 35vw, 450px);
+
+            aspect-ratio: 1 / 1;
+
+            border-radius: 50%;
+
+            object-fit: cover;
+
+            filter: grayscale(30%) contrast(1.1);
+
+            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+
+            transition: filter 0.5s ease;
+
+        }
+
+
+
+        .profile-img:hover {
+
+            filter: grayscale(0%) contrast(1);
+
+        }
+
+
+
+        /* Gallery Section */
+
+        #gallery {
+
+            padding: var(--space-xl) 4vw;
+
+            transition: background-color 1.2s ease;
+
+            margin: 0 calc(-4vw); /* 画面幅いっぱいに広げる */
+
+            padding-left: 8vw;
+
+            padding-right: 8vw;
+
+        }
+
+
+
+        .gallery-header {
+
+            margin-bottom: var(--space-md);
+
+        }
+
+
+
+        .gallery-list {
+
+            display: flex;
+
+            flex-direction: column;
+
+        }
+
+
+
+        .gallery-category {
+
+            border-bottom: 1px solid var(--color-gold-light);
+
+        }
+
+
+
+        .gallery-item-header {
+
+            display: flex;
+
+            align-items: baseline;
+
+            gap: 4vw;
+
+            padding: 1rem 0; /* 1.5remからさらに縮小 */
+
+            cursor: pointer;
+
+            transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+
+        }
+
+
+
+        .gallery-item-header:hover, .gallery-category.is-active .gallery-item-header {
+
+            transform: translateX(20px);
+
+        }
+
+
+
+        .gallery-num {
+
+            font-family: var(--font-label);
+
+            font-size: 1rem;
+
+            color: var(--color-gold);
+
+        }
+
+
+
+        .gallery-title {
+
+            font-family: var(--font-hero);
+
+            font-size: clamp(1.8rem, 4vw, 3.5rem);
+
+            letter-spacing: 0.05em;
+
+            flex-grow: 1;
+
+        }
+
+
+
+        .gallery-desc {
+
+            font-size: 1rem;
+
+            color: var(--color-text-light);
+
+            max-width: 300px;
+
+            text-align: right;
+
+            opacity: 0;
+
+            transform: translateX(-10px);
+
+            transition: opacity 0.5s ease, transform 0.5s ease;
+
+        }
+
+
+
+        .gallery-item-header:hover .gallery-desc, .gallery-category.is-active .gallery-desc {
+
+            opacity: 1;
+
+            transform: translateX(0);
+
+        }
+
+
+
+        /* ギャラリー展開部分（グリッドレイアウト） */
+
+        .gallery-slideshow {
+
+            max-height: 0;
+
+            overflow: hidden;
+
+            transition: max-height 0.8s cubic-bezier(0.25, 1, 0.5, 1), padding 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+
+        }
+
+
+
+        .gallery-category.is-active .gallery-slideshow {
+
+            max-height: 300vh; /* 画像が多数表示されるよう十分な高さを確保 */
+
+            padding-bottom: 2rem; /* 少し縮小 */
+
+        }
+
+
+
+        .slideshow-track {
+
+            display: grid;
+
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+
+            gap: 1.5vw; /* 少し間隔を詰める */
+
+            padding: 1rem 0;
+
+        }
+
+
+
+        .slide {
+
+            width: 100%;
+
+            aspect-ratio: 3/2;
+
+            background-color: rgba(0, 0, 0, 0.03); /* ニュートラルな薄いグレー */
+
+            position: relative;
+
+            overflow: hidden;
+
+        }
+
+
+
+        .slide img {
+
+            width: 100%;
+
+            height: 100%;
+
+            object-fit: cover;
+
+            transition: transform 1.5s ease;
+
+        }
+
+
+
+        .slide:hover img {
+
+            transform: scale(1.03);
+
+        }
+
+
+
+        /* YouTube埋め込み用スタイル */
+
+        .slide.slide-video {
+
+            aspect-ratio: 16 / 9;
+
+        }
+
+
+
+        .slide iframe {
+
+            width: 100%;
+
+            height: 100%;
+
+            border: none;
+
+            display: block;
+
+        }
+
+
+
+        /* Chronicle Section */
+
+        #chronicle {
+
+            padding-top: var(--space-xl);
+
+        }
+
+        
+
+        .section-title {
+
+            font-family: var(--font-hero);
+
+            font-size: clamp(2rem, 5vw, 4rem);
+
+            margin-bottom: var(--space-sm); /* タブを入れるため少し狭める */
+
+            text-align: center;
+
+        }
+
+
+
+        /* 絞り込み用タブのスタイル */
+
+        .chronicle-tabs {
+
+            display: flex;
+
+            justify-content: center;
+
+            flex-wrap: wrap;
+
+            gap: 2vw;
+
+            margin-bottom: var(--space-md);
+
+        }
+
+
+
+        .chronicle-tab {
+
+            background: transparent;
+
+            border: none;
+
+            font-family: var(--font-label);
+
+            font-size: 0.9rem;
+
+            letter-spacing: 0.2em;
+
+            color: var(--color-text-light);
+
+            cursor: pointer;
+
+            padding: 0.5rem 1rem;
+
+            position: relative;
+
+            transition: color 0.3s ease;
+
+        }
+
+
+
+        .chronicle-tab.is-active, .chronicle-tab:hover {
+
+            color: var(--color-text);
+
+        }
+
+
+
+        .chronicle-tab::after {
+
+            content: '';
+
+            position: absolute;
+
+            bottom: 0;
+
+            left: 0;
+
+            width: 100%;
+
+            height: 1px;
+
+            background-color: var(--color-gold);
+
+            transform: scaleX(0);
+
+            transform-origin: right;
+
+            transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+
+        }
+
+
+
+        .chronicle-tab.is-active::after {
+
+            transform: scaleX(1);
+
+            transform-origin: left;
+
+        }
+
+
+
+        .chronicle-container {
+
+            max-width: 1000px;
+
+            margin: 0 auto;
+
+            border-top: 1px solid var(--color-gold-light); /* 全体の上線をこちらに移動 */
+
+        }
+
+
+
+        .chronicle-row {
+
+            display: grid;
+
+            grid-template-columns: 100px 1fr;
+
+            gap: 4vw;
+
+            padding: 2rem 0; /* 3remから縮小 */
+
+            border-bottom: 1px solid var(--color-gold-light); /* 各項目の下線に変更 */
+
+            animation: fadeInRow 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+
+        }
+
+
+
+        @keyframes fadeInRow {
+
+            from { opacity: 0; transform: translateY(10px); }
+
+            to { opacity: 1; transform: translateY(0); }
+
+        }
+
+
+
+        .chronicle-year {
+
+            font-family: var(--font-label);
+
+            font-size: 1.2rem;
+
+            color: var(--color-gold);
+
+            padding-top: 5px;
+
+        }
+
+
+
+        .chronicle-content h4 {
+
+            font-size: 1.4rem;
+
+            margin-bottom: 0.5rem;
+
+        }
+
+
+
+        .chronicle-content p {
+
+            color: var(--color-text-light);
+
+            font-size: 1rem;
+
+        }
+
+
+
+        /* 箇条書きリスト用のスタイル追加 */
+
+        .chronicle-list {
+
+            list-style: none;
+
+            padding-left: 0;
+
+            margin: 0;
+
+        }
+
+
+
+        .chronicle-list li {
+
+            position: relative;
+
+            padding-left: 1.2rem;
+
+            margin-bottom: 0.8rem;
+
+            font-size: 0.95rem;
+
+            color: var(--color-text);
+
+            line-height: 1.6;
+
+        }
+
+
+
+        .chronicle-list li::before {
+
+            content: '-';
+
+            position: absolute;
+
+            left: 0;
+
+            color: var(--color-gold);
+
+        }
+
+
+
+        .chronicle-list a {
+
+            color: inherit;
+
+            text-decoration: underline;
+
+            text-decoration-color: var(--color-gold-light);
+
+            text-underline-offset: 3px;
+
+            transition: text-decoration-color 0.3s ease;
+
+        }
+
+
+
+        .chronicle-list a:hover {
+
+            text-decoration-color: var(--color-gold);
+
+        }
+
+
+
+        /* Contact Section */
+
+        #contact {
+
+            padding: var(--space-xl) 4vw;
+
+            max-width: 800px;
+
+            margin: 0 auto;
+
+        }
+
+
+
+        .contact-form {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 3rem;
+
+            margin-top: var(--space-md);
+
+        }
+
+
+
+        .form-group {
+
+            position: relative;
+
+        }
+
+
+
+        .form-input {
+
+            width: 100%;
+
+            background: transparent;
+
+            border: none;
+
+            border-bottom: 1px solid var(--color-gold-light);
+
+            padding: 1rem 0;
+
+            font-family: var(--font-body);
+
+            font-size: 1.1rem;
+
+            color: var(--color-text);
+
+            transition: border-color 0.3s ease;
+
+        }
+
+
+
+        .form-input:focus {
+
+            outline: none;
+
+            border-bottom-color: var(--color-gold);
+
+        }
+
+
+
+        .form-input::placeholder {
+
+            color: #C0BFBA;
+
+            font-family: var(--font-label);
+
+            letter-spacing: 0.2em;
+
+            font-size: 0.8rem;
+
+        }
+
+        
+
+        textarea.form-input {
+
+            resize: vertical;
+
+            min-height: 100px;
+
+        }
+
+
+
+        .submit-btn {
+
+            align-self: flex-start;
+
+            background: transparent;
+
+            border: none;
+
+            font-family: var(--font-label);
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.4em;
+
+            font-size: 0.9rem;
+
+            cursor: pointer;
+
+            padding: 1rem 0;
+
+            color: var(--color-text);
+
+            position: relative;
+
+            margin-top: 2rem;
+
+        }
+
+
+
+        .submit-btn::after {
+
+            content: '';
+
+            position: absolute;
+
+            bottom: 0;
+
+            left: 0;
+
+            width: 100%;
+
+            height: 1px;
+
+            background-color: var(--color-gold);
+
+            transform: scaleX(0);
+
+            transform-origin: right;
+
+            transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+
+        }
+
+
+
+        .submit-btn:hover::after {
+
+            transform: scaleX(1);
+
+            transform-origin: left;
+
+        }
+
+
+
+        /* Footer */
+
+        footer {
+
+            padding: 4vw;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            border-top: 1px solid var(--color-gold-light);
+
+            margin-top: var(--space-lg);
+
+        }
+
+
+
+        .social-links {
+
+            display: flex;
+
+            gap: 2rem;
+
+        }
+
+
+
+        .social-links a {
+
+            color: var(--color-text-light);
+
+            transition: color 0.3s ease;
+
+        }
+
+
+
+        .social-links a:hover {
+
+            color: var(--color-text);
+
+        }
+
+
+
+        /* Modal (Popup) */
+
+        .modal {
+
+            display: none;
+
+            position: fixed;
+
+            z-index: 1000;
+
+            left: 0;
+
+            top: 0;
+
+            width: 100%;
+
+            height: 100%;
+
+            background-color: rgba(20, 20, 18, 0.95); /* 深い墨色の半透明 */
+
+            opacity: 0;
+
+            transition: opacity 0.4s ease;
+
+            backdrop-filter: blur(5px); /* 背景を少しぼかす */
+
+        }
+
+
+
+        .modal.is-open {
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            opacity: 1;
+
+        }
+
+
+
+        .modal-content {
+
+            max-width: 90vw;
+
+            max-height: 90vh;
+
+            object-fit: contain;
+
+            transform: scale(0.98);
+
+            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+
+        }
+
+
+
+        .modal.is-open .modal-content {
+
+            transform: scale(1);
+
+        }
+
+
+
+        .modal-close {
+
+            position: absolute;
+
+            top: 2rem;
+
+            right: 4vw;
+
+            color: var(--color-gold-light);
+
+            font-size: 3rem;
+
+            font-weight: 300;
+
+            cursor: pointer;
+
+            transition: color 0.3s ease, transform 0.3s ease;
+
+            font-family: var(--font-label);
+
+            line-height: 1;
+
+            padding: 10px;
+
+        }
+
+
+
+        .modal-close:hover {
+
+            color: var(--color-gold);
+
+            transform: scale(1.1);
+
+        }
+
+
+
+        .modal-prev, .modal-next {
+
+            position: absolute;
+
+            top: 50%;
+
+            transform: translateY(-50%);
+
+            color: var(--color-gold-light);
+
+            font-size: 3rem;
+
+            font-weight: 300;
+
+            cursor: pointer;
+
+            transition: color 0.3s ease, transform 0.3s ease;
+
+            font-family: var(--font-label);
+
+            line-height: 1;
+
+            padding: 20px;
+
+            user-select: none;
+
+            z-index: 1001;
+
+        }
+
+
+
+        .modal-prev {
+
+            left: 2vw;
+
+        }
+
+
+
+        .modal-next {
+
+            right: 2vw;
+
+        }
+
+
+
+        .modal-prev:hover {
+
+            color: var(--color-gold);
+
+            transform: translateY(-50%) scale(1.1) translateX(-5px);
+
+        }
+
+
+
+        .modal-next:hover {
+
+            color: var(--color-gold);
+
+            transform: translateY(-50%) scale(1.1) translateX(5px);
+
+        }
+
+
+
+        .slide img {
+
+            cursor: pointer; /* クリック可能であることを示す */
+
+        }
+
+
+
+        /* Responsive */
+
+        @media (max-width: 768px) {
+
+            .nav-links {
+
+                display: none; /* モバイルではハンバーガー推奨だが今回は簡略化のため非表示 */
+
+            }
+
+
+
+            #about {
+
+                grid-template-columns: 1fr;
+
+                text-align: center;
+
+                gap: 3rem;
+
+            }
+
+
+
+            .about-text {
+
+                padding-right: 0;
+
+            }
+
+
+
+            .profile-bio {
+
+                text-align: left;
+
+            }
+
+
+
+            .gallery-item-header {
+
+                flex-direction: column;
+
+                gap: 1rem;
+
+                align-items: flex-start;
+
+            }
+
+
+
+            .gallery-desc {
+
+                text-align: left;
+
+                opacity: 1;
+
+                transform: none;
+
+            }
+
+
+
+            .slideshow-track {
+
+                grid-template-columns: 1fr; /* スマホでは縦1列に */
+
+                gap: 1rem;
+
+            }
+
+
+
+            .chronicle-row {
+
+                grid-template-columns: 1fr;
+
+                gap: 1rem;
+
+                padding: 2rem 0;
+
+            }
+
+            
+
+            footer {
+
+                flex-direction: column;
+
+                gap: 2rem;
+
+                text-align: center;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+
+
+    <nav>
+
+        <a href="#hero" class="nav-logo">
+
+            <img src="vision-ridge.svg" alt="Yoshihiro Abiko Logo">
+
+        </a>
+
+        <ul class="nav-links text-label">
+
+            <li><a href="#about">ABOUT</a></li>
+
+            <li><a href="#gallery">GALLERY</a></li>
+
+            <li><a href="#chronicle">WORK</a></li>
+
+            <li><a href="#contact">CONTACT</a></li>
+
+        </ul>
+
+    </nav>
+
+
+
+    <main>
+
+        <!-- HERO -->
+
+        <section id="hero">
+
+            <!-- 背景画像（複数配置） -->
+
+            <div class="hero-bg is-active" style="background-image: url('http://biei-kamifurano.com/wp-content/uploads/2026/03/7R509770.jpg');"></div>
+
+            <div class="hero-bg" style="background-image: url('http://biei-kamifurano.com/wp-content/uploads/2026/03/7R507479.jpg);"></div>
+
+            <div class="hero-bg" style="background-image: url('http://biei-kamifurano.com/wp-content/uploads/2024/02/A1_06374-Edit-scaled.jpg');"></div>
+
+
+
+            <!-- コンテンツ -->
+
+            <div class="hero-content">
+
+                <h1 class="hero-title fade-elem">YOSHIHIRO ABIKO PHOTOGRAPHY</h1>
+
+                <p class="hero-subtitle text-label fade-elem" style="transition-delay: 0.2s;">
+
+                    Based in Kamifurano, Hokkaido.
+
+                </p>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ABOUT -->
+
+        <section id="about" class="fade-elem">
+
+            <div class="about-text fade-elem">
+
+                <span class="text-label" style="color: var(--color-gold); display: block; margin-bottom: 1rem;">About</span>
+
+                
+
+                <h3 class="about-name">安彦 嘉浩 <span>Yoshihiro Abiko</span></h3>
+
+                <span class="text-label about-role" style="color: var(--color-text-light);">Photographer</span>
+
+
+
+                <!--<h2 class="about-title">引き算の美学。<br>影が光を定義する。</h2>-->
+
+                <p class="about-desc">
+
+                   1989年、山形県生まれ。北海道上富良野町在住。<br>
+
+                    電機メーカーで生産技術エンジニア、上富良野町役場で観光部門担当としての勤務を経て、2026年よりフリーランスとして独立。雄大な十勝岳連峰の麓を拠点に、この土地の風土が育む景観や野生動物と向き合っている。
+
+                </p>
+
+
+
+                <ul class="about-achievements fade-elem" style="transition-delay: 0.3s;">
+
+                    <li>Sony α7 V 公式プロモーション担当</li>
+
+                    <li>YBC 山形放送「金のピヨ卵」出演</li>
+
+                    <li>東京カメラ部10選 2019</li>
+
+                </ul>
+
+                
+
+            </div>
+
+            
+
+            <div class="about-image-wrapper fade-elem" style="transition-delay: 0.2s;">
+
+                <!-- プロフィール画像。ホバーでモノクロからカラーに変化します -->
+
+                <img src="http://biei-kamifurano.com/wp-content/uploads/2026/01/IMG_2200-e1767625027669.jpg" alt="Yoshihiro Abiko Profile" class="profile-img">
+
+            </div>
+
+        </section>
+
+
+
+        <!-- THE GALLERY -->
+
+        <section id="gallery">
+
+            <div class="gallery-header fade-elem text-label">
+
+                The Collections
+
+            </div>
+
+            <ul class="gallery-list">
+
+                <!-- data-colorはホバー時の背景色。淡く優しい色調 -->
+
+                <li class="gallery-category fade-elem" data-color="#F2F5F7">
+
+                    <div class="gallery-item-header">
+
+                        <span class="gallery-num">01</span>
+
+                        <h3 class="gallery-title">LANDSCAPE <span style="font-size: 0.6em; color: var(--color-text-light);">-Kamifurano-</span></h3>
+
+                        <p class="gallery-desc"></p>
+
+                    </div>
+
+                    <div class="gallery-slideshow">
+
+                        <div class="slideshow-track">
+
+                            <div class="slide"><img src="http://biei-kamifurano.com/wp-content/uploads/2024/02/A1_06374-Edit-scaled.jpg" loading="lazy" alt="Landscape Kamifurano 1"></div>
+
+                            <div class="slide"><img src="http://biei-kamifurano.com/wp-content/uploads/2024/02/DSCF1481-Edit-scaled.jpg" loading="lazy" alt="Landscape Kamifurano 2"></div>
+
+                            <div class="slide"><img src="http://biei-kamifurano.com/wp-content/uploads/2026/04/A7V04945.jpg" loading="lazy" alt="Landscape Kamifurano 3"></div>
+
+                        </div>
+
+                    </div>
+
+                </li>
+
+                <li class="gallery-category fade-elem" data-color="#EEF3F6">
+
+                    <div class="gallery-item-header">
+
+                        <span class="gallery-num">02</span>
+
+                        <h3 class="gallery-title">LANDSCAPE <span style="font-size: 0.6em; color: var(--color-text-light);">-Hokkaido-</span></h3>
+
+                        <p class="gallery-desc"></p>
+
+                    </div>
+
+                    <div class="gallery-slideshow">
+
+                        <div class="slideshow-track">
+
+                            <div class="slide"><img src="http://biei-kamifurano.com/wp-content/uploads/2024/02/7CR01634-2.jpg" loading="lazy" alt="Landscape Hokkaido 1"></div>
+
+                            <div class="slide"><img src="http://biei-kamifurano.com/wp-content/uploads/2026/03/A1_06877.jpg" loading="lazy" alt="Landscape Hokkaido 2"></div>
+
+                        </div>
+
+                    </div>
+
+                </li>
+
+                <li class="gallery-category fade-elem" data-color="#F0F5F2">
+
+                    <div class="gallery-item-header">
+
+                        <span class="gallery-num">03</span>
+
+                        <h3 class="gallery-title">WILDLIFE</h3>
+
+                        <p class="gallery-desc"></p>
+
+                    </div>
+
+                    <div class="gallery-slideshow">
+
+                        <!-- クラスに random-track を追加 -->
+
+                        <div class="slideshow-track random-track">
+
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765310/th_3D2CE575-7DB8-40DE-AB83-371EE60AB307_ubgbsr.jpg" loading="lazy" alt="Wildlife"></div>
+
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765310/th_7R304943_eqweqm.jpg" loading="lazy" alt="Wildlife"></div>
+
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765308/th_7R307092-Edit_2_lwvwrt.jpg" loading="lazy" alt="Wildlife"></div>
+
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765304/th_A1_00165_pephfs.jpg" loading="lazy" alt="Wildlife"></div>
+
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765303/th_7R509487-Enhanced-NR_nc9v8t.jpg" loading="lazy" alt="Wildlife"></div>
+
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765303/th_7R508986_mgez63.jpg" loading="lazy" alt="Wildlife"></div>
+
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765305/th_A1208480_iw5aog.jpg" loading="lazy" alt="Wildlife"></div>
+
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765301/th_A1_01021-Enhanced-NR_2_r2jbla.jpg" loading="lazy" alt="Wildlife"></div>
+
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765300/th_A1207707_g0f1mt.jpg" loading="lazy" alt="Wildlife"></div>
+
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765302/th_91C0ECEA-C121-483E-9B9B-61BA16370B62_sk266d.jpg" loading="lazy" alt="Wildlife"></div>
+
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765299/th_A1_01053_voy7tt.jpg" loading="lazy" alt="Wildlife"></div>
+
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765299/th_A1_01693-Edit-Edit_vq0wq6.jpg" loading="lazy" alt="Wildlife"></div>
+
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765296/th_A1_03452-2_qgjitn.jpg" loading="lazy" alt="Wildlife"></div>
+
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765296/th_A1_02820-Edit-4_asx1gx.jpg" loading="lazy" alt="Wildlife"></div>
+
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765296/th_A1_03319_yzzzas.jpg" loading="lazy" alt="Wildlife"></div>
+
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765295/th_A1_03397_vu9v0u.jpg" loading="lazy" alt="Wildlife"></div>
+
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765282/th_A7V03501_bonft6.jpg" loading="lazy" alt="Wildlife"></div>
+
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765100/th_A7V04515_3_futpdw.jpg" loading="lazy" alt="Wildlife"></div>
+
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765098/th_A7V09251-2_o6mo5l.jpg" loading="lazy" alt="Wildlife"></div>
+
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765098/th_A9_01920-Edit-3_9_mnfd9g.jpg" loading="lazy" alt="Wildlife"></div>
+
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765097/th_A9_02229-Edit-Edit_2_qp1br1.jpg" loading="lazy" alt="Wildlife"></div>
+
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765097/th_A9A02444-Edit_2_wztukh.jpg" loading="lazy" alt="Wildlife"></div>
+
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765096/th_A9_02729_irlabj.jpg" loading="lazy" alt="Wildlife"></div>
+
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765091/th_DSC08055-Edit-2_10_ad3yf0.jpg" loading="lazy" alt="Wildlife"></div>
+
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765091/th_DSC04576-Edit-2_4_fll931.jpg" loading="lazy" alt="Wildlife"></div>
+
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765090/th_DSC06931-Edit-Edit_4_pomrjc.jpg" loading="lazy" alt="Wildlife"></div>
+
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765087/th_IMG_4175_ixhibg.jpg" loading="lazy" alt="Wildlife"></div>
+
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765087/th_IMG_4186_4_oozvtq.jpg" loading="lazy" alt="Wildlife"></div>
+
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765084/th__A9_6118-Edit_2_qjeqe8.jpg" loading="lazy" alt="Wildlife"></div>
+
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765084/th__A9_2188_xtw66r.jpg" loading="lazy" alt="Wildlife"></div>
+
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765082/th__A9_7949-Edit_yjmimr.jpg" loading="lazy" alt="Wildlife"></div>
+
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765082/th__A9_9427_3_pyzg1x.jpg" loading="lazy" alt="Wildlife"></div>
+
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765081/th__DSC0573-Edit_2_jm3yrh.jpg" loading="lazy" alt="Wildlife"></div>
+
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765288/th_A1_08535-Edit-Edit_wzr0lz.jpg" loading="lazy" alt="Wildlife"></div>
+
+                        </div>
+
+                    </div>
+
+                </li>
+
+                <li class="gallery-category fade-elem" data-color="#FAF5F3">
+
+                    <div class="gallery-item-header">
+
+                        <span class="gallery-num">04</span>
+
+                        <h3 class="gallery-title">PORTRAIT</h3>
+
+                        <p class="gallery-desc"></p>
+
+                    </div>
+
+                    <div class="gallery-slideshow">
+
+                        <div class="slideshow-track">
+
+                            <div class="slide"><img src="https://picsum.photos/seed/port1/800/533" loading="lazy" alt="Portrait 1"></div>
+
+                            <div class="slide"><img src="https://picsum.photos/seed/port2/800/533" loading="lazy" alt="Portrait 2"></div>
+
+                            <div class="slide"><img src="https://picsum.photos/seed/port3/800/533" loading="lazy" alt="Portrait 3"></div>
+
+                        </div>
+
+                    </div>
+
+                </li>
+
+                <li class="gallery-category fade-elem" data-color="#F4F3F5">
+
+                    <div class="gallery-item-header">
+
+                        <span class="gallery-num">05</span>
+
+                        <h3 class="gallery-title">CINEMATOGRAPHY</h3>
+
+                        <p class="gallery-desc"></p>
+
+                    </div>
+
+                    <div class="gallery-slideshow">
+
+                        <div class="slideshow-track">
+
+                            <div class="slide slide-video">
+
+                                <iframe src="https://www.youtube.com/embed/LXb3EKWsInQ?rel=0" title="Cinematography Work 1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+                            </div>
+
+                            <div class="slide slide-video">
+
+                                <iframe src="https://www.youtube.com/embed/WNCl-69POro?rel=0" title="Cinematography Work 2" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </li>
+
+            </ul>
+
+        </section>
+
+
+
+        <!-- CHRONICLE -->
+
+        <section id="chronicle">
+
+            <h2 class="section-title fade-elem">CHRONICLE</h2>
+
+            
+
+            <!-- タブUIを追加 -->
+
+            <div class="chronicle-tabs fade-elem">
+
+                <button class="chronicle-tab is-active" data-filter="all">ALL</button>
+
+                <button class="chronicle-tab" data-filter="work">WORK</button>
+
+                <button class="chronicle-tab" data-filter="award">AWARD</button>
+
+                <button class="chronicle-tab" data-filter="exhibition">EXHIBITION</button>
+
+            </div>
+
+
+
+            <div class="chronicle-container">
+
+                
+
+                <!-- ================= WORK ================= -->
+
+                <div class="chronicle-row fade-elem" data-category="work">
+
+                    <div class="chronicle-year">2026</div>
+
+                    <div class="chronicle-content">
+
+                        <ul class="chronicle-list">
+
+                            <li>【特別企画】α7 V 発売記念講座講師</li>
+
+                            <li>CP＋2026ソニーブース登壇</li>
+
+                            <li>作品集『A Life』発売記念イベントin札幌登壇</li>
+
+                        </ul>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="chronicle-row fade-elem" data-category="work">
+
+                    <div class="chronicle-year">2025</div>
+
+                    <div class="chronicle-content">
+
+                        <ul class="chronicle-list">
+
+                            <li><a href="https://www.wakudoki-furano.com/" target="_blank" rel="noopener">ワクドキフラノ – 富良野をもっと元気にするフリーペーパー</a> 掲載</li>
+
+                            <li>CP+2025NiSiフィルターブース登壇</li>
+
+                            <li>CuiCui2025タムロンブース登壇</li>
+
+                            <li>東京カメラ部写真展2025 OMデジタルソリューションズステージ登壇</li>
+
+                            <li>Sony α7 V公式プロモーション担当</li>
+
+                            <li>ソニーマーケティング株式会社制作写真作品集「A Life」に掲載</li>
+
+                            <li>ドキュメンタリー動画出演</li>
+
+                        </ul>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="chronicle-row fade-elem" data-category="work">
+
+                    <div class="chronicle-year">2024</div>
+
+                    <div class="chronicle-content">
+
+                        <ul class="chronicle-list">
+
+                            <li><a href="https://www.town.kamifurano.hokkaido.jp/contents/20down/koho/s24/24-02-10.pdf" target="_blank" rel="noopener">かみふらのラブにてインタビュー掲載：上富良野町広報（2024年2月10日号）</a></li>
+
+                            <li>十勝岳ジオパークPR動画制作</li>
+
+                            <li>2024支笏湖氷濤まつりポスター用写真（メインビジュアル）採用</li>
+
+                            <li><a href="https://www.sony.jp/ichigan/a-universe/specialevent/cpplus2024/?s_tc=jp_sm_tw_dix_240207_2_0_cpplus" target="_blank" rel="noopener">CP＋2024 ソニーブース登壇</a></li>
+
+                        </ul>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="chronicle-row fade-elem" data-category="work">
+
+                    <div class="chronicle-year">2023</div>
+
+                    <div class="chronicle-content">
+
+                        <ul class="chronicle-list">
+
+                            <li><a href="https://www.sony.jp/ichigan/a-universe/news/705/" target="_blank" rel="noopener">写真家 安彦嘉浩 氏からみたα7 IV</a></li>
+
+                            <li><a href="https://www.mapion.co.jp/news/column/cobs2570060-1-all/" target="_blank" rel="noopener">【鹿】こんなところに置物か……と思ったら本物!? 雪にすっぽり埋まったエゾシカに驚きの声!!</a></li>
+
+                            <li><a href="https://taisetsucoffee.com/collections/%e5%ae%89%e5%bd%a6%e5%98%89%e6%b5%a9-%e3%82%b3%e3%83%ac%e3%82%af%e3%82%b7%e3%83%a7%e3%83%b3" target="_blank" rel="noopener">大雪コーヒーパッケージ写真採用</a></li>
+
+                            <li>9/19号 週刊女性「異世界ツアーにようそこ」にて写真採用</li>
+
+                            <li>東京カメラ部写真展2023 『東京カメラ部10選と語るαで広がる作品表現と楽しさ』登壇</li>
+
+                            <li><a href="https://encounter.curbon.jp/column/yoshihiroabiko/" target="_blank" rel="noopener">写真が紡ぐ物語、北海道での生活と探求 CURBON</a></li>
+
+                            <li><a href="https://www.hokkaido-np.co.jp/article/943075/" target="_blank" rel="noopener">上富良野の魅力、カレンダーに 町内の若手写真家３人自費制作：北海道新聞ふらの版</a></li>
+
+                            <li><a href="https://www.youtube.com/watch?v=GfEcLbUmAUE&t=16s" target="_blank" rel="noopener">上富良野町ホリデーメッセージへ写真採用</a></li>
+
+                        </ul>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="chronicle-row fade-elem" data-category="work">
+
+                    <div class="chronicle-year">2022</div>
+
+                    <div class="chronicle-content">
+
+                        <ul class="chronicle-list">
+
+                            <li><a href="https://yamap.com/magazine/34305" target="_blank" rel="noopener">YAMAPフォトコンテストインタビュー</a></li>
+
+                            <li><a href="https://www.youtube.com/watch?v=Bh8q4-w9EEE" target="_blank" rel="noopener">Xperia PRO-I Creator’s Works</a></li>
+
+                            <li>ソニーストア札幌５周年祭 安彦嘉浩×平井葉月”α”スペシャルトークショー登壇</li>
+
+                            <li><a href="https://nlab.itmedia.co.jp/nl/articles/2206/21/news019.html" target="_blank" rel="noopener">夕暮れの草原で鬼ごっこをする子ギツネきょうだい 弾むようなシルエットに見入ってしまう</a></li>
+
+                            <li><a href="https://tamronbase.jp/media/landscape_abiko_taisetuzan" target="_blank" rel="noopener">タムロンの超望遠ズームレンズとともにのぼる、めぐる。北海道大雪山の自然とキツネたち</a></li>
+
+                            <li><a href="https://sony.jp/ichigan/a-universe/special_newgen/77.html" target="_blank" rel="noopener">SONY α Universe スペシャルコンテンツ『NEW Generation』：α7RⅤ</a></li>
+
+                        </ul>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="chronicle-row fade-elem" data-category="work">
+
+                    <div class="chronicle-year">2021</div>
+
+                    <div class="chronicle-content">
+
+                        <ul class="chronicle-list">
+
+                            <li>支笏湖氷濤まつり制作過程撮影</li>
+
+                            <li><a href="https://www.sony.jp/ichigan/a-universe/special_newgen/57.html" target="_blank" rel="noopener">SONY α Universe スペシャルコンテンツ『NEW Generation』：α7Ⅳ</a></li>
+
+                            <li><a href="https://www.kobe-np.co.jp/rentoku/omoshiro/202110/0014788374.shtml" target="_blank" rel="noopener">「ここが秋と冬の境界線」季節の変わり目を捉えた写真に大反響：神戸新聞</a></li>
+
+                        </ul>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="chronicle-row fade-elem" data-category="work">
+
+                    <div class="chronicle-year">2020</div>
+
+                    <div class="chronicle-content">
+
+                        <ul class="chronicle-list">
+
+                            <li><a href="https://www.sony.jp/ichigan/a-universe/special_newgen/10.html" target="_blank" rel="noopener">SONY α Universe スペシャルコンテンツ『NEW Generation』：α9</a></li>
+
+                            <li><a href="https://dc.watch.impress.co.jp/docs/review/alphashoot/1231791.html" target="_blank" rel="noopener">デジカメ watch ソニー フルサイズミラーレスα7 IIIの実力をジャンル別に検証【風景編】</a></li>
+
+                            <li><a href="https://www.sony.jp/ichigan/a-universe/news/439/" target="_blank" rel="noopener">SONY α Universe α7R IV 特集：先進画質×俊敏性。新しい表現領域へ ～原点「支笏湖」の多彩な表情～</a></li>
+
+                            <li><a href="https://www.youtube.com/watch?v=oTUpPi7_5VY" target="_blank" rel="noopener">東京カメラ部主催 【夏フォト！】インスタライブ第1回</a></li>
+
+                        </ul>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="chronicle-row fade-elem" data-category="work">
+
+                    <div class="chronicle-year">2019</div>
+
+                    <div class="chronicle-content">
+
+                        <ul class="chronicle-list">
+
+                            <li>デジタルカメラマガジン2019年2月号 寄稿</li>
+
+                            <li>撮りフェス In 室蘭2019 「NiSiフィルター体験ワークショップ」講師</li>
+
+                            <li><a href="https://www.sony.jp/store/retail/sapporo/photo-fes2019-2/" target="_blank" rel="noopener">北海道の若手写真家が語る、デジタル一眼カメラ”α”の魅力</a> 登壇</li>
+
+                        </ul>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- ================= AWARD ================= -->
+
+                <div class="chronicle-row fade-elem" data-category="award">
+
+                    <div class="chronicle-year">2023</div>
+
+                    <div class="chronicle-content">
+
+                        <ul class="chronicle-list">
+
+                            <li><a href="https://biei-komugi.com/contest/" target="_blank" rel="noopener">美瑛小麦フォトコンテスト2022 “準グランプリ”</a></li>
+
+                            <li><a href="https://biei-komugi.com/contest-2023/" target="_blank" rel="noopener">美瑛小麦フォトコンテスト2023 “準グランプリ”</a></li>
+
+                            <li><a href="https://tokachidake-geopark.jp/news/11074/" target="_blank" rel="noopener">十勝岳ジオパークフォトコンテスト “最優秀賞”</a></li>
+
+                        </ul>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="chronicle-row fade-elem" data-category="award">
+
+                    <div class="chronicle-year">2021</div>
+
+                    <div class="chronicle-content">
+
+                        <ul class="chronicle-list">
+
+                            <li><a href="https://yamap.com/magazine/32305" target="_blank" rel="noopener">YAMAPフォトコンテスト2021 “YAMAP賞”</a></li>
+
+                            <li><a href="https://www.bdk.or.jp/photo_contest/2021_result.html" target="_blank" rel="noopener">一日一訓カレンダーフォトコンテスト “入選”</a></li>
+
+                        </ul>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="chronicle-row fade-elem" data-category="award">
+
+                    <div class="chronicle-year">2019</div>
+
+                    <div class="chronicle-content">
+
+                        <ul class="chronicle-list">
+
+                            <li><a href="https://tokyocameraclub.com/special/exhibition_2019/photo_47.php" target="_blank" rel="noopener">アサヒカメラ×東京カメラ部共催 「日本の47枚」フォトコンテスト（北海道枠）</a></li>
+
+                            <li><a href="https://www.stepon.co.jp/photocon/2019/" target="_blank" rel="noopener">第6回住友不動産販売ステップフォトコン “銅賞”</a></li>
+
+                            <li><a href="https://tokyocameraclub.com/special/10viral_2019/" target="_blank" rel="noopener">東京カメラ部10選2019</a></li>
+
+                        </ul>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="chronicle-row fade-elem" data-category="award">
+
+                    <div class="chronicle-year">2018</div>
+
+                    <div class="chronicle-content">
+
+                        <ul class="chronicle-list">
+
+                            <li><a href="https://tzipac.com/6th-zebra-awards-winners-gallery#prettyPhoto" target="_blank" rel="noopener">6th Zebra Awards “Grand Winner”</a></li>
+
+                            <li><a href="https://www.photo-asahi.com/contest/1/508/result/645/" target="_blank" rel="noopener">第35回「日本の自然」写真コンテスト（デジタル部門） “入選”</a></li>
+
+                            <li>The “Prix de la Photographie, Paris” (Px3), Nature / Trees Professional “Bronze Prize”</li>
+
+                            <li><a href="https://www.naturesbestphotography.asia/ja/gallery/gallery-2018" target="_blank" rel="noopener">Nature’s Best Photography ASIA “Highly Honored WILDLIFE”</a></li>
+
+                            <li><a href="https://www.stepon.co.jp/photocon/2018/" target="_blank" rel="noopener">第5回住友不動産販売ステップフォトコン “銀賞”</a></li>
+
+                            <li>IPA, Professional Nature, Trees: 1st</li>
+
+                        </ul>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="chronicle-row fade-elem" data-category="award">
+
+                    <div class="chronicle-year">2017</div>
+
+                    <div class="chronicle-content">
+
+                        <ul class="chronicle-list">
+
+                            <li><a href="https://beautifulvillagesofjapan.tokyocameraclub.com/photocontest2017/results.html" target="_blank" rel="noopener">「日本で最も美しい村」フォトコンテスト “入選”</a></li>
+
+                            <li><a href="https://www.montbell.jp/campaign/yamanohi_photo/2017/" target="_blank" rel="noopener">モンベル山の日フォトコンテスト “入選”</a></li>
+
+                        </ul>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- ================= EXHIBITION ================= -->
+
+                <div class="chronicle-row fade-elem" data-category="exhibition">
+
+                    <div class="chronicle-year">2026</div>
+
+                    <div class="chronicle-content">
+
+                        <ul class="chronicle-list">
+
+                            <li>個展 「THEATRE OF SHADOW」 ソニーストア札幌</li>
+
+                        </ul>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="chronicle-row fade-elem" data-category="exhibition">
+
+                    <div class="chronicle-year">2025</div>
+
+                    <div class="chronicle-content">
+
+                        <ul class="chronicle-list">
+
+                            <li>合同展 「東京カメラ部2025写真展」 渋谷ヒカリエ</li>
+
+                        </ul>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="chronicle-row fade-elem" data-category="exhibition">
+
+                    <div class="chronicle-year">2024</div>
+
+                    <div class="chronicle-content">
+
+                        <ul class="chronicle-list">
+
+                            <li>合同展 「KAMIFURANO」 つた家 上富良野町</li>
+
+                            <li><a href="https://biei-act.jp/event/restart/" target="_blank" rel="noopener">合同展 「RESPECT」 丘のまち交流館 bi.yell（ビ・エール）</a></li>
+
+                            <li>合同展 「東京カメラ部2024写真展」 渋谷ヒカリエ</li>
+
+                        </ul>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="chronicle-row fade-elem" data-category="exhibition">
+
+                    <div class="chronicle-year">2023</div>
+
+                    <div class="chronicle-content">
+
+                        <ul class="chronicle-list">
+
+                            <li><a href="https://biei-act.jp/event/restart/" target="_blank" rel="noopener">合同展 「RESTART」 丘のまち交流館 bi.yell（ビ・エール）</a></li>
+
+                            <li>合同展 「東京カメラ部2023写真展」 渋谷ヒカリエ</li>
+
+                            <li>合同展 「KAMIFURANO」 後藤純男美術館 上富良野町</li>
+
+                            <li>合同展 「KAMIFURANO」 凌雲閣 上富良野町</li>
+
+                        </ul>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="chronicle-row fade-elem" data-category="exhibition">
+
+                    <div class="chronicle-year">2022</div>
+
+                    <div class="chronicle-content">
+
+                        <ul class="chronicle-list">
+
+                            <li>オンライン合同展 「東京カメラ部2022写真展」</li>
+
+                        </ul>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="chronicle-row fade-elem" data-category="exhibition">
+
+                    <div class="chronicle-year">2021</div>
+
+                    <div class="chronicle-content">
+
+                        <ul class="chronicle-list">
+
+                            <li>オンライン合同展 「東京カメラ部2021写真展」</li>
+
+                        </ul>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="chronicle-row fade-elem" data-category="exhibition">
+
+                    <div class="chronicle-year">2020</div>
+
+                    <div class="chronicle-content">
+
+                        <ul class="chronicle-list">
+
+                            <li>オンライン合同展 「東京カメラ部2020写真展」</li>
+
+                        </ul>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="chronicle-row fade-elem" data-category="exhibition">
+
+                    <div class="chronicle-year">2019</div>
+
+                    <div class="chronicle-content">
+
+                        <ul class="chronicle-list">
+
+                            <li>個展 「Backlit Moments」ソニーストア札幌</li>
+
+                            <li>合同展 「東京カメラ部2019写真展」 ヒカリエ</li>
+
+                            <li>合同展 「涼を楽しむアート展」 ル・トロワ</li>
+
+                            <li>個展 円豆珈琲</li>
+
+                        </ul>
+
+                    </div>
+
+                </div>
+
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- CONTACT -->
+
+        <section id="contact" class="fade-elem">
+
+            <h2 class="section-title" style="text-align: left;">INQUIRY</h2>
+
+            <p class="text-label" style="color: var(--color-text-light);">
+
+                撮影依頼、ポートレートセッション、作品のご購入について。
+
+            </p>
+
+            <form class="contact-form" onsubmit="event.preventDefault();">
+
+                <div class="form-group">
+
+                    <input type="text" class="form-input" placeholder="NAME" required>
+
+                </div>
+
+                <div class="form-group">
+
+                    <input type="email" class="form-input" placeholder="EMAIL" required>
+
+                </div>
+
+                <div class="form-group">
+
+                    <textarea class="form-input" placeholder="MESSAGE" required></textarea>
+
+                </div>
+
+                <button type="submit" class="submit-btn">Send Message</button>
+
+            </form>
+
+        </section>
+
+    </main>
+
+
+
+    <footer class="fade-elem">
+
+        <div class="footer-copy text-label">
+
+            &copy; 2026 YOSHIHIRO ABIKO. ALL RIGHTS RESERVED.
+
+        </div>
+
+        <div class="social-links">
+
+            <!-- Icons (SVG Inline) -->
+
+            <a href="#" aria-label="Instagram">
+
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+
+            </a>
+
+            <a href="#" aria-label="X">
+
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg>
+
+            </a>
+
+            <a href="#" aria-label="YouTube">
+
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33 2.78 2.78 0 0 0 1.94 2c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.33 29 29 0 0 0-.46-5.33z"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/></svg>
+
+            </a>
+
+            <a href="#" aria-label="TikTok">
+
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg>
+
+            </a>
+
+            <a href="#" aria-label="Mail">
+
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+
+            </a>
+
+        </div>
+
+    </footer>
+
+
+
+    <!-- Image Modal -->
+
+    <div id="image-modal" class="modal">
+
+        <span class="modal-close">&times;</span>
+
+        <span class="modal-prev">&#10094;</span>
+
+        <span class="modal-next">&#10095;</span>
+
+        <img class="modal-content" id="modal-img" alt="Enlarged gallery image">
+
+    </div>
+
+
+
+    <!-- JavaScript -->
+
+    <script>
+
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // 画像のランダムシャッフル処理 (ページ読み込み時に実行)
+
+            const randomTracks = document.querySelectorAll('.random-track');
+
+            randomTracks.forEach(track => {
+
+                const slides = Array.from(track.children);
+
+                // フィッシャー–イェーツのシャッフル
+
+                for (let i = slides.length - 1; i > 0; i--) {
+
+                    const j = Math.floor(Math.random() * (i + 1));
+
+                    // appendChildにより要素が移動する
+
+                    track.appendChild(slides[j]);
+
+                }
+
+            });
+
+
+
+            // 1. Intersection Observer for Fade-in Animation
+
+            const observerOptions = {
+
+                root: null,
+
+                rootMargin: '0px',
+
+                threshold: 0.15
+
+            };
+
+
+
+            const observer = new IntersectionObserver((entries, observer) => {
+
+                entries.forEach(entry => {
+
+                    if (entry.isIntersecting) {
+
+                        entry.target.classList.add('is-visible');
+
+                    }
+
+                });
+
+            }, observerOptions);
+
+
+
+            const fadeElements = document.querySelectorAll('.fade-elem');
+
+            fadeElements.forEach(el => observer.observe(el));
+
+
+
+            // 2. Gallery Accordion & Hover Background Logic
+
+            const galleryCategories = document.querySelectorAll('.gallery-category');
+
+            const gallerySection = document.getElementById('gallery');
+
+
+
+            galleryCategories.forEach(category => {
+
+                category.addEventListener('mouseenter', () => {
+
+                    const hoverColor = category.getAttribute('data-color');
+
+                    if(hoverColor) {
+
+                        gallerySection.style.backgroundColor = hoverColor;
+
+                    }
+
+                });
+
+
+
+                category.addEventListener('mouseleave', () => {
+
+                    const activeCategory = document.querySelector('.gallery-category.is-active');
+
+                    if(activeCategory) {
+
+                         const activeColor = activeCategory.getAttribute('data-color');
+
+                         gallerySection.style.backgroundColor = activeColor || 'transparent';
+
+                    } else {
+
+                         gallerySection.style.backgroundColor = 'transparent';
+
+                    }
+
+                });
+
+
+
+                const header = category.querySelector('.gallery-item-header');
+
+                header.addEventListener('click', () => {
+
+                    const isActive = category.classList.contains('is-active');
+
+                    
+
+                    // Close all
+
+                    galleryCategories.forEach(c => {
+
+                        c.classList.remove('is-active');
+
+                    });
+
+
+
+                    if (!isActive) {
+
+                        // Open clicked
+
+                        category.classList.add('is-active');
+
+                        const activeColor = category.getAttribute('data-color');
+
+                        if(activeColor) {
+
+                             gallerySection.style.backgroundColor = activeColor;
+
+                        }
+
+                    }
+
+                });
+
+            });
+
+            
+
+            // 3. Image Modal Logic
+
+            const modal = document.getElementById('image-modal');
+
+            const modalImg = document.getElementById('modal-img');
+
+            const closeBtn = document.querySelector('.modal-close');
+
+            const prevBtn = document.querySelector('.modal-prev');
+
+            const nextBtn = document.querySelector('.modal-next');
+
+            const allGalleryImages = document.querySelectorAll('.slide img'); // 全画像
+
+            
+
+            let currentCategoryImagesArray = []; // 現在開いているカテゴリの画像配列
+
+            let currentImageIndex = 0;
+
+
+
+            const showModalImage = (index) => {
+
+                modal.style.display = 'flex';
+
+                // 少し遅延させてからクラスを追加し、CSSトランジションを効かせる
+
+                setTimeout(() => {
+
+                    modal.classList.add('is-open');
+
+                }, 10);
+
+                modalImg.src = currentCategoryImagesArray[index].src;
+
+            };
+
+
+
+            allGalleryImages.forEach((img) => {
+
+                img.addEventListener('click', (e) => {
+
+                    // クリックされた画像が属するカテゴリ（.slideshow-track）内の画像だけを配列にする
+
+                    const track = img.closest('.slideshow-track');
+
+                    if (track) {
+
+                        currentCategoryImagesArray = Array.from(track.querySelectorAll('.slide img'));
+
+                        currentImageIndex = currentCategoryImagesArray.indexOf(img);
+
+                        showModalImage(currentImageIndex);
+
+                    }
+
+                });
+
+            });
+
+
+
+            const closeModal = () => {
+
+                modal.classList.remove('is-open');
+
+                setTimeout(() => {
+
+                    modal.style.display = 'none';
+
+                    modalImg.src = ''; // クリアしておく
+
+                }, 400); // CSSのtransition時間と合わせる
+
+            };
+
+
+
+            const showPrevImage = (e) => {
+
+                if(e) e.stopPropagation(); // モーダルの背景クリックイベント発火を防ぐ
+
+                if (currentCategoryImagesArray.length > 0) {
+
+                    currentImageIndex = (currentImageIndex - 1 + currentCategoryImagesArray.length) % currentCategoryImagesArray.length;
+
+                    modalImg.src = currentCategoryImagesArray[currentImageIndex].src;
+
+                }
+
+            };
+
+
+
+            const showNextImage = (e) => {
+
+                if(e) e.stopPropagation();
+
+                if (currentCategoryImagesArray.length > 0) {
+
+                    currentImageIndex = (currentImageIndex + 1) % currentCategoryImagesArray.length;
+
+                    modalImg.src = currentCategoryImagesArray[currentImageIndex].src;
+
+                }
+
+            };
+
+
+
+            closeBtn.addEventListener('click', closeModal);
+
+            prevBtn.addEventListener('click', showPrevImage);
+
+            nextBtn.addEventListener('click', showNextImage);
+
+            
+
+            // モーダルの背景（画像以外の部分）をクリックしても閉じる
+
+            modal.addEventListener('click', (e) => {
+
+                if (e.target === modal) {
+
+                    closeModal();
+
+                }
+
+            });
+
+
+
+            // キーボード操作対応
+
+            document.addEventListener('keydown', (e) => {
+
+                if (modal.classList.contains('is-open')) {
+
+                    if (e.key === 'Escape') closeModal();
+
+                    if (e.key === 'ArrowLeft') showPrevImage();
+
+                    if (e.key === 'ArrowRight') showNextImage();
+
+                }
+
+            });
+
+
+
+            // 4. Chronicle Tabs Logic
+
+            const chronicleTabs = document.querySelectorAll('.chronicle-tab');
+
+            const chronicleRows = document.querySelectorAll('.chronicle-row');
+
+
+
+            chronicleTabs.forEach(tab => {
+
+                tab.addEventListener('click', () => {
+
+                    // タブのアクティブ状態を更新
+
+                    chronicleTabs.forEach(t => t.classList.remove('is-active'));
+
+                    tab.classList.add('is-active');
+
+
+
+                    const filter = tab.getAttribute('data-filter');
+
+
+
+                    // リストの表示・非表示を切り替え
+
+                    chronicleRows.forEach(row => {
+
+                        if (filter === 'all' || row.getAttribute('data-category') === filter) {
+
+                            row.style.display = ''; // デフォルトのdisplay（Grid）に戻す
+
+                            
+
+                            // アニメーションを再トリガーしてふわっと表示させる
+
+                            row.style.animation = 'none';
+
+                            row.offsetHeight; // リフローを強制してアニメーションをリセット
+
+                            row.style.animation = null;
+
+                        } else {
+
+                            row.style.display = 'none';
+
+                        }
+
+                    });
+
+                });
+
+            });
+
+
+
+            // 5. Hero Slideshow Logic
+
+            const heroBgs = document.querySelectorAll('.hero-bg');
+
+            if (heroBgs.length > 1) {
+
+                let currentHeroIdx = 0;
+
+                setInterval(() => {
+
+                    heroBgs[currentHeroIdx].classList.remove('is-active');
+
+                    currentHeroIdx = (currentHeroIdx + 1) % heroBgs.length;
+
+                    heroBgs[currentHeroIdx].classList.add('is-active');
+
+                }, 7000); // 7000ミリ秒 = 7秒ごとに切り替え
+
+            }
+
+
+
+            // 最初のアニメーション（ヒーローセクション）
+
+            setTimeout(() => {
+
+                const heroElems = document.querySelectorAll('#hero .fade-elem');
+
+                heroElems.forEach(el => el.classList.add('is-visible'));
+
+            }, 100);
+
+        });
+
+    </script>
+
+</body>
+
+</html>
