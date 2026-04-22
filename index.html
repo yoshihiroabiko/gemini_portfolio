@@ -5,32 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>安彦 嘉浩 | 北海道上富良野フォトグラファー </title>
     
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Pinyon+Script&family=Josefin+Sans:wght@300;400&family=Noto+Serif+JP:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=EB+Garamond:ital,wght@0,400;1,400&family=Pinyon+Script&family=Josefin+Sans:wght@300;400&family=Noto+Serif+JP:wght@300;400&family=Jost:wght@200;300;400&display=swap" rel="stylesheet">
     
     <style>
         /* CSS Variables */
         :root {
             --font-hero: 'Cormorant Garamond', serif;
-            --font-script: 'Pinyon Script', cursive; /* 高級感のある筆記体 */
+            --font-script: 'Pinyon Script', cursive;
             --font-body: 'EB Garamond', 'Noto Serif JP', serif;
             --font-label: 'Josefin Sans', sans-serif;
+            --font-futura: 'Jost', sans-serif;
             
             /* Color Palette - Bright, gentle, low saturation */
-            --color-bg: #FCFBF9; /* オフホワイト */
-            --color-text: #33322E; /* 柔らかな墨色 */
+            --color-bg: #FCFBF9;
+            --color-text: #33322E;
             --color-text-light: #7A7871;
-            --color-gold: #D2C4A7; /* 控えめなゴールド */
+            --color-gold: #D2C4A7;
             --color-gold-light: #EBE5D9;
             
-            /* Spacing (全体的にコンパクトに調整) */
+            /* Spacing */
             --space-xs: 0.5rem;
             --space-sm: 1rem;
-            --space-md: 1.5rem; /* 2remから縮小 */
-            --space-lg: 2.5rem; /* 3.5remから縮小 */
-            --space-xl: 3.5rem; /* 5remから縮小 */
+            --space-md: 1.5rem;
+            --space-lg: 1.5rem;
+            --space-xl: 2.5rem;
         }
 
         /* Reset & Base */
@@ -40,17 +40,14 @@
             box-sizing: border-box;
         }
 
-        html, body {
-            overflow-x: hidden;
-            width: 100%; /* スマホでの右側の謎の余白（横スクロール）を防止 */
-            position: relative;
-        }
-
         html {
             scroll-behavior: smooth;
         }
 
         body {
+            overflow-x: hidden; /* 横揺れ防止はbodyのみに適用 */
+            width: 100%;
+            position: relative;
             background-color: var(--color-bg);
             color: var(--color-text);
             font-family: var(--font-body);
@@ -79,37 +76,80 @@
             font-size: 0.8rem;
         }
 
+        /* Film Grain Overlay */
+        @keyframes grain {
+            0%, 100% { transform: translate(0, 0); }
+            10% { transform: translate(-1%, -2%); }
+            20% { transform: translate(-4%, 1%); }
+            30% { transform: translate(2%, -4%); }
+            50% { transform: translate(-3%, 2%); }
+        }
+        .grain-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.04;
+            overflow: hidden;
+        }
+        .grain-overlay::before {
+            content: "";
+            position: absolute;
+            width: 200%; height: 200%;
+            top: -50%; left: -50%;
+            background-image: url('https://grainy-gradients.vercel.app/noise.svg');
+            animation: grain 8s steps(10) infinite;
+        }
+
         /* Navigation */
         nav {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            padding: 1.5rem 4vw; /* 帯としての太さに合わせて余白を調整 */
+            padding: 1.5rem 4vw;
             display: flex;
-            justify-content: flex-end; /* space-betweenからflex-endに変更し、右寄せに */
+            justify-content: center;
             align-items: center;
             z-index: 100;
-            pointer-events: auto; /* 下へのクリック貫通をやめ、帯として機能させる */
-            background-color: rgba(252, 251, 249, 0.85); /* オフホワイトの半透明背景 */
-            backdrop-filter: blur(10px); /* すりガラス効果で高級感を演出 */
-            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08); /* 影を少し濃くして境界をはっきりさせる */
+            pointer-events: auto;
+            background-color: transparent;
+            backdrop-filter: blur(0px);
+            box-shadow: none;
+            transition: background-color 0.4s ease, backdrop-filter 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        nav.is-scrolled {
+            background-color: rgba(252, 251, 249, 0.85);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
         }
 
         .nav-logo {
-            display: none; /* ロゴを非表示に */
+            display: none;
         }
 
         .nav-links {
             display: flex;
-            gap: 1.5vw; /* スペースを詰める */
+            gap: 2vw;
             pointer-events: auto;
-            font-size: 0.7rem; /* 文字サイズを少し小さく */
+            font-size: 0.7rem;
+            letter-spacing: 0.2em; 
         }
 
         .nav-links li a {
             position: relative;
             padding-bottom: 5px;
+            color: rgba(255, 255, 255, 0.8);
+            transition: color 0.4s ease, opacity 0.3s ease;
+        }
+
+        nav.is-scrolled .nav-links li a {
+            color: var(--color-text);
+        }
+
+        .nav-links li a:hover {
+            opacity: 0.5;
         }
 
         .nav-links li a::after {
@@ -119,10 +159,14 @@
             left: 0;
             width: 100%;
             height: 1px;
-            background-color: var(--color-gold);
+            background-color: rgba(255, 255, 255, 0.5);
             transform: scaleX(0);
             transform-origin: right;
-            transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+            transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1), background-color 0.4s ease;
+        }
+
+        nav.is-scrolled .nav-links li a::after {
+            background-color: var(--color-gold);
         }
 
         .nav-links li a:hover::after {
@@ -130,21 +174,28 @@
             transform-origin: left;
         }
 
-        /* ハンバーガーアイコン (PCでは非表示) */
+        /* ハンバーガーアイコン */
         .hamburger {
             display: none;
             pointer-events: auto;
             cursor: pointer;
-            z-index: 101; /* メニューより上に配置 */
+            z-index: 101;
+            position: absolute;
+            right: 4vw;
         }
 
         .hamburger span {
             display: block;
             width: 24px;
             height: 1px;
-            background-color: var(--color-text);
+            background-color: rgba(255, 255, 255, 0.8);
             margin: 6px 0;
-            transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+            transition: background-color 0.4s ease, transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s ease;
+        }
+
+        nav.is-scrolled .hamburger span,
+        .hamburger.is-active span {
+            background-color: var(--color-text);
         }
 
         /* Intersection Observer Fade In */
@@ -162,11 +213,11 @@
 
         /* Section Layouts */
         section {
-            padding: var(--space-lg) 4vw;
+            padding: var(--space-xl) 4vw;
             position: relative;
         }
 
-        /* Hero Section */
+        /* --- HERO Section --- */
         #hero {
             height: 100vh;
             display: flex;
@@ -177,90 +228,149 @@
             text-align: center;
             position: relative;
             overflow: hidden;
+            background-color: #000;
         }
 
-        /* スライドショー背景 */
+        .hero-bg-container {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            will-change: transform;
+        }
+
         .hero-bg {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            inset: 0;
             background-size: cover;
             background-position: center;
             opacity: 0;
-            transition: opacity 2s ease-in-out;
-            z-index: 1;
+            transition: opacity 2.5s ease-in-out;
+            transform: scale(1);
         }
 
         .hero-bg.is-active {
             opacity: 1;
         }
 
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.2);
+            z-index: 2;
+        }
+
         .hero-content {
             position: relative;
-            z-index: 2; /* テキストを画像の上に配置 */
+            z-index: 10;
+            will-change: transform, opacity;
+        }
+
+        .hero-title-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .hero-title {
-            font-family: var(--font-script);
-            font-size: clamp(3.6rem, 8vw, 6.4rem); /* 以前の約0.8倍のサイズに調整 */
-            letter-spacing: 0.02em; /* 文字の繋がりが綺麗に見えるよう字間を調整 */
+            font-family: var(--font-futura);
+            font-size: clamp(2rem, 5vw, 4rem);
+            font-weight: 200;
             line-height: 1.1;
-            margin-bottom: 2rem;
-            text-shadow: 0 0 15px rgba(255, 255, 255, 0.5), 0 0 30px rgba(255, 255, 255, 0.3); /* 光彩を控えめに調整 */
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: #fff;
+            text-shadow: 0 0 20px rgba(0,0,0,0.5);
+            text-indent: 0.3em;
         }
 
         .hero-subtitle {
-            color: var(--color-text); /* 少し濃い色にして視認性アップ */
-            text-shadow: 0 0 8px rgba(255, 255, 255, 0.6), 0 0 15px rgba(255, 255, 255, 0.4); /* 白い光彩を控えめに調整 */
-            max-width: 600px;
-            margin: 0 auto;
+            font-family: var(--font-label);
+            font-size: clamp(0.7rem, 1.5vw, 1rem);
+            letter-spacing: 1em;
+            text-transform: uppercase;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 0.5rem;
+            text-indent: 1em;
+        }
+
+        /* スクロールインジケーター */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 3rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .scroll-indicator .text-label {
+            font-size: 0.5rem;
+            letter-spacing: 0.5em;
+        }
+
+        .scroll-arrow {
+            animation: bounce 2s infinite ease-in-out;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(12px); }
         }
 
         /* About Section */
         #about {
-            min-height: 70vh; /* 80vhから縮小してよりコンパクトに */
+            min-height: auto;
             display: grid;
-            grid-template-columns: 1fr 1fr; /* PCでは左右1:1 */
-            gap: 3vw; /* 5vwから縮小 */
+            grid-template-columns: 1fr 1fr;
+            gap: 4vw;
             align-items: center;
+            padding-top: calc(var(--space-xl) * 1.5);
+            padding-bottom: var(--space-xl);
         }
 
         .about-text {
-            padding-left: 5%; /* テキストが右にきたので、左側に少し余白を設けてバランスを取ります */
+            padding-left: 5%;
         }
 
         .about-name {
             font-family: var(--font-hero);
-            font-size: clamp(1.8rem, 3vw, 2.5rem);
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            font-weight: 300;
             margin-bottom: 0;
             line-height: 1.2;
         }
 
         .about-name span {
             font-family: var(--font-label);
-            font-size: 0.45em;
+            font-size: 0.35em;
             color: var(--color-text-light);
-            letter-spacing: 0.1em;
-            margin-left: 0.5rem;
+            letter-spacing: 0.2em;
+            margin-left: 0.8rem;
             text-transform: uppercase;
+            font-weight: 300;
         }
 
         .about-role {
-            margin-bottom: 1.5rem; /* 2remから縮小 */
+            margin-bottom: 1.5rem;
             display: block;
         }
 
         .about-desc {
             font-size: 0.95rem;
+            font-weight: 300;
             color: var(--color-text-light);
             margin-bottom: 1.5rem;
+            line-height: 2;
         }
         
         .about-achievements {
-            margin-top: 1.5rem; /* 2remから縮小 */
-            padding-top: 1.5rem; /* 2remから縮小 */
+            margin-top: 2rem;
+            padding-top: 1.5rem;
             border-top: 1px solid var(--color-gold-light);
         }
 
@@ -271,6 +381,7 @@
             font-size: 0.85rem;
             color: var(--color-text);
             letter-spacing: 0.05em;
+            font-weight: 300;
         }
 
         .about-achievements li::before {
@@ -282,7 +393,6 @@
             height: 4px;
             border-radius: 50%;
             background-color: var(--color-gold);
-            box-shadow: 0 0 4px rgba(210, 196, 167, 0.5);
         }
 
         .about-image-wrapper {
@@ -293,25 +403,20 @@
 
         .profile-img {
             width: clamp(250px, 35vw, 450px);
-            aspect-ratio: 1 / 1;
-            border-radius: 50%;
+            aspect-ratio: 4 / 5; 
             object-fit: cover;
             filter: grayscale(30%) contrast(1.1);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
-            transition: filter 0.5s ease;
+            transition: filter 0.5s ease, transform 0.5s ease;
         }
 
         .profile-img:hover {
             filter: grayscale(0%) contrast(1);
         }
 
-        /* Gallery Section */
+        /* --- GALLERY Section --- */
         #gallery {
             padding: var(--space-xl) 4vw;
             transition: background-color 1.2s ease;
-            margin: 0 calc(-4vw);
-            padding-left: 8vw;
-            padding-right: 8vw;
         }
 
         .gallery-header {
@@ -329,15 +434,51 @@
 
         .gallery-item-header {
             display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.5rem 0;
+            cursor: pointer;
+        }
+
+        .gallery-header-info {
+            display: flex;
             align-items: baseline;
             gap: 4vw;
-            padding: 0.8rem 0; /* 1remから縮小 */
-            cursor: pointer;
             transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
         }
 
-        .gallery-item-header:hover, .gallery-category.is-active .gallery-item-header {
+        .gallery-item-header:hover .gallery-header-info, 
+        .gallery-category.is-active .gallery-header-info {
             transform: translateX(20px);
+        }
+
+        .gallery-header-thumb {
+            width: clamp(120px, 20vw, 250px);
+            aspect-ratio: 16 / 9;
+            overflow: hidden;
+            border-radius: 2px;
+            opacity: 0.6;
+            transition: opacity 0.5s ease;
+            pointer-events: none;
+        }
+
+        .gallery-item-header:hover .gallery-header-thumb,
+        .gallery-category.is-active .gallery-header-thumb {
+            opacity: 1;
+        }
+
+        .gallery-header-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(80%);
+            transition: transform 1.5s ease, filter 1.5s ease;
+        }
+
+        .gallery-item-header:hover .gallery-header-thumb img,
+        .gallery-category.is-active .gallery-header-thumb img {
+            transform: scale(1.1);
+            filter: grayscale(0%);
         }
 
         .gallery-num {
@@ -353,22 +494,6 @@
             flex-grow: 1;
         }
 
-        .gallery-desc {
-            font-size: 1rem;
-            color: var(--color-text-light);
-            max-width: 300px;
-            text-align: right;
-            opacity: 0;
-            transform: translateX(-10px);
-            transition: opacity 0.5s ease, transform 0.5s ease;
-        }
-
-        .gallery-item-header:hover .gallery-desc, .gallery-category.is-active .gallery-desc {
-            opacity: 1;
-            transform: translateX(0);
-        }
-
-        /* ギャラリー展開部分 */
         .gallery-slideshow {
             max-height: 0;
             overflow: hidden;
@@ -407,7 +532,18 @@
             transform: scale(1.03);
         }
 
-        /* VIEW MORE ボタン */
+        /* YouTube埋め込み用スタイル */
+        .slide.slide-video {
+            aspect-ratio: 16 / 9;
+        }
+
+        .slide iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+
         .view-more-btn {
             display: block;
             margin: 1.5rem auto 0;
@@ -428,20 +564,10 @@
             color: #fff;
         }
 
-        .slide.slide-video {
-            aspect-ratio: 16 / 9;
-        }
-
-        .slide iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-            display: block;
-        }
-
         /* Chronicle Section */
         #chronicle {
             padding-top: var(--space-xl);
+            padding-bottom: var(--space-xl);
         }
         
         .section-title {
@@ -504,7 +630,7 @@
             display: grid;
             grid-template-columns: 100px 1fr;
             gap: 4vw;
-            padding: 1.5rem 0; /* 2remから縮小 */
+            padding: 1.5rem 0;
             border-bottom: 1px solid var(--color-gold-light);
             animation: fadeInRow 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
         }
@@ -519,16 +645,6 @@
             font-size: 1.2rem;
             color: var(--color-gold);
             padding-top: 5px;
-        }
-
-        .chronicle-content h4 {
-            font-size: 1.4rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .chronicle-content p {
-            color: var(--color-text-light);
-            font-size: 1rem;
         }
 
         .chronicle-list {
@@ -568,6 +684,7 @@
         /* Contact Section */
         #contact {
             padding: var(--space-xl) 4vw;
+            padding-bottom: calc(var(--space-xl) * 2);
             max-width: 800px;
             margin: 0 auto;
         }
@@ -579,41 +696,27 @@
 
         .contact-email-link {
             font-family: var(--font-label);
-            font-size: 0.85rem; /* clamp(1.2rem, 3vw, 1.8rem) から大幅に縮小 */
+            font-size: 0.85rem;
             color: var(--color-text);
-            letter-spacing: 0.2em; /* 文字が小さくなった分、字間を少し広げて読みやすく */
+            letter-spacing: 0.2em;
             text-decoration: none;
             position: relative;
             padding-bottom: 5px;
-            transition: color 0.3s ease;
+            transition: opacity 0.3s ease;
         }
 
-        .contact-email-link::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 1px;
-            background-color: var(--color-gold);
-            transform: scaleX(0);
-            transform-origin: right;
-            transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1);
-        }
-
-        .contact-email-link:hover::after {
-            transform: scaleX(1);
-            transform-origin: left;
+        .contact-email-link:hover {
+            opacity: 0.5;
         }
 
         /* Footer */
         footer {
-            padding: 4vw;
+            padding: 2vw 4vw;
             display: flex;
             justify-content: space-between;
             align-items: center;
             border-top: 1px solid var(--color-gold-light);
-            margin-top: var(--space-lg);
+            margin-top: 0;
         }
 
         .social-links {
@@ -700,19 +803,14 @@
         }
 
         .modal-prev svg, .modal-next svg {
-            width: 28px; /* 矢印を小さく */
+            width: 28px;
             height: 28px;
-            stroke-width: 1px; /* 矢印を細く */
+            stroke-width: 1px;
             transition: transform 0.3s ease;
         }
 
-        .modal-prev {
-            left: 2vw;
-        }
-
-        .modal-next {
-            right: 2vw;
-        }
+        .modal-prev { left: 2vw; }
+        .modal-next { right: 2vw; }
 
         .modal-prev:hover {
             color: var(--color-gold);
@@ -724,9 +822,43 @@
             transform: translateY(-50%) translateX(5px);
         }
 
+        .modal-counter {
+            position: absolute;
+            bottom: 3rem;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--color-gold-light);
+            font-family: var(--font-label);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            z-index: 1001;
+            user-select: none;
+            opacity: 0.8;
+        }
+
+        .modal-counter .current-num {
+            font-size: 1.1rem;
+            letter-spacing: 0.1em;
+            font-weight: 300;
+        }
+        
+        .modal-counter .divider {
+            width: 40px;
+            height: 1px;
+            background-color: var(--color-gold-light);
+            opacity: 0.4;
+        }
+
+        .modal-counter .total-num {
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            opacity: 0.6;
+            font-weight: 300;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
-            /* ハンバーガーメニュー表示 */
             .hamburger {
                 display: block;
             }
@@ -747,7 +879,7 @@
                 left: 0;
                 width: 100%;
                 height: 100vh;
-                background-color: rgba(252, 251, 249, 0.98); /* 背景を半透明に */
+                background-color: rgba(252, 251, 249, 0.98);
                 backdrop-filter: blur(10px);
                 flex-direction: column;
                 justify-content: center;
@@ -757,7 +889,7 @@
                 pointer-events: none;
                 visibility: hidden;
                 transition: opacity 0.4s ease, visibility 0.4s ease;
-                font-size: 1.2rem; /* スマホメニュー用に文字を大きく */
+                font-size: 1.2rem;
                 margin: 0;
             }
 
@@ -767,35 +899,54 @@
                 pointer-events: auto;
             }
 
+            .nav-links li a {
+                color: var(--color-text) !important;
+            }
+            
+            .nav-links li a::after {
+                background-color: var(--color-gold) !important;
+            }
+
             #about {
-                grid-template-columns: 1fr; /* スマホでは1列（写真が上になる） */
+                grid-template-columns: 1fr;
                 text-align: center;
-                gap: 2rem; /* 3remから縮小 */
+                gap: 2rem;
             }
 
             .about-text {
-                padding-left: 0; /* スマホ表示時は余白をリセット */
+                padding-left: 0;
             }
 
             .about-desc {
-                text-align: justify; /* スマホ時に全体揃え（両端揃え）にする */
-                text-justify: inter-ideograph; /* 日本語の改行を綺麗にする */
+                text-align: justify;
+                text-justify: inter-ideograph;
             }
 
             .about-achievements {
-                text-align: left; /* リストも綺麗に揃うよう左揃えにする */
+                text-align: left;
             }
 
             .gallery-item-header {
-                flex-direction: column;
-                gap: 1rem;
+                flex-direction: column-reverse;
+                gap: 1.5rem;
                 align-items: flex-start;
+                padding: 2rem 0;
+            }
+            
+            .gallery-header-info {
+                flex-direction: column;
+                gap: 0.5rem;
             }
 
-            .gallery-desc {
-                text-align: left;
-                opacity: 1;
-                transform: none;
+            .gallery-item-header:hover .gallery-header-info, 
+            .gallery-category.is-active .gallery-header-info {
+                transform: translateX(10px);
+            }
+
+            .gallery-header-thumb {
+                width: 100%;
+                aspect-ratio: 21 / 9;
+                opacity: 0.85;
             }
 
             .slideshow-track {
@@ -806,7 +957,7 @@
             .chronicle-row {
                 grid-template-columns: 1fr;
                 gap: 1rem;
-                padding: 1.5rem 0; /* 2remから縮小 */
+                padding: 1.5rem 0;
             }
             
             footer {
@@ -819,13 +970,9 @@
 </head>
 <body>
 
+    <div class="grain-overlay"></div>
+
     <nav>
-        <!-- ロゴは非表示化 -->
-        <!-- <a href="#hero" class="nav-logo">
-            <img src="vision-ridge.svg" alt="Yoshihiro Abiko Logo">
-        </a> -->
-        
-        <!-- ハンバーガーメニューボタン -->
         <div class="hamburger" id="hamburger">
             <span></span>
             <span></span>
@@ -842,29 +989,37 @@
     </nav>
 
     <main>
-        <!-- HERO -->
         <section id="hero">
-            <div class="hero-bg is-active" style="background-image: url('http://biei-kamifurano.com/wp-content/uploads/2026/03/7R509770.jpg');"></div>
-            <div class="hero-bg" style="background-image: url('http://biei-kamifurano.com/wp-content/uploads/2026/03/7R507479.jpg');"></div>
-            <div class="hero-bg" style="background-image: url('http://biei-kamifurano.com/wp-content/uploads/2024/02/A1_06374-Edit-scaled.jpg');"></div>
+            <div class="hero-bg-container" id="hero-bg-container">
+                <div class="hero-bg is-active" style="background-image: url('https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765100/th_A7V04515_3_futpdw.jpg');"></div>
+                <div class="hero-bg" style="background-image: url('https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765097/th_A7V04945_n2hxgm.jpg');"></div>
+                <div class="hero-bg" style="background-image: url('https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765093/th_DJI_20250505105945_0211_D_AIR3_co8fnt.jpg');"></div>
+                <div class="hero-bg" style="background-image: url('https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765091/th_DSC02965-Edit-2_2_p293h2.jpg');"></div>
+                <div class="hero-bg" style="background-image: url('https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765091/th_DSC04576-Edit-2_4_fll931.jpg');"></div>
+                <div class="hero-bg" style="background-image: url('https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765282/th_A7V03501_bonft6.jpg');"></div>
+                <div class="hero-overlay"></div>
+            </div>
 
-            <div class="hero-content">
-                <h1 class="hero-title fade-elem">Yoshihiro Abiko Photography</h1>
-                <p class="hero-subtitle text-label fade-elem" style="transition-delay: 0.2s;">
-                    Based in Kamifurano, Hokkaido.
-                </p>
+            <div class="hero-content" id="hero-content">
+                <div class="hero-title-wrapper fade-elem">
+                    <h1 class="hero-title">Yoshihiro Abiko</h1>
+                    <span class="hero-subtitle">photography</span>
+                </div>
+            </div>
+
+            <div class="scroll-indicator fade-elem" style="transition-delay: 1.5s;">
+                <span class="text-label">Scroll</span>
+                <svg class="scroll-arrow" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
             </div>
         </section>
 
-        <!-- ABOUT -->
         <section id="about" class="fade-elem">
-            <!-- 写真を先に記述することで、PCでは左、スマホでは上に配置されます -->
             <div class="about-image-wrapper fade-elem" style="transition-delay: 0.2s;">
                 <img src="http://biei-kamifurano.com/wp-content/uploads/2026/01/IMG_2200-e1767625027669.jpg" alt="Yoshihiro Abiko Profile" class="profile-img">
             </div>
 
             <div class="about-text fade-elem">
-                <span class="text-label" style="color: var(--color-gold); display: block; margin-bottom: 1rem;">Profile</span>
+                <span class="text-label" style="color: var(--color-gold); display: block; margin-bottom: 1rem;">About</span>
                 
                 <h3 class="about-name">安彦 嘉浩 <span>Yoshihiro Abiko</span></h3>
                 <span class="text-label about-role" style="color: var(--color-text-light);">Photographer</span>
@@ -882,21 +1037,24 @@
             </div>
         </section>
 
-        <!-- THE GALLERY -->
         <section id="gallery">
             <div class="gallery-header fade-elem text-label">
-                The Gallery
+                The Collections
             </div>
-
+            
             <ul class="gallery-list">
                 <li class="gallery-category fade-elem" data-color="#F2F5F7">
                     <div class="gallery-item-header">
-                        <span class="gallery-num">01</span>
-                        <h3 class="gallery-title">LANDSCAPE <span style="font-family: var(--font-label); font-size: 0.5em; letter-spacing: 0.1em; color: var(--color-text-light); vertical-align: middle;">- Kamifurano -</span></h3>
-                        <p class="gallery-desc"></p>
+                        <div class="gallery-header-info">
+                            <span class="gallery-num">01</span>
+                            <h3 class="gallery-title">LANDSCAPE <span style="font-family: var(--font-label); font-size: 0.5em; letter-spacing: 0.1em; color: var(--color-text-light); vertical-align: middle;">- Kamifurano -</span></h3>
+                        </div>
+                        <div class="gallery-header-thumb">
+                            <img src="http://biei-kamifurano.com/wp-content/uploads/2026/03/7R509770.jpg" alt="Kamifurano Thumbnail">
+                        </div>
                     </div>
                     <div class="gallery-slideshow">
-                        <div class="slideshow-track">
+                        <div class="slideshow-track random-track" id="track-kamifurano">
                             <div class="slide"><img src="http://biei-kamifurano.com/wp-content/uploads/2024/02/A1_06374-Edit-scaled.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
                             <div class="slide"><img src="http://biei-kamifurano.com/wp-content/uploads/2024/02/DSCF1481-Edit-scaled.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
                             <div class="slide"><img src="http://biei-kamifurano.com/wp-content/uploads/2026/04/A7V04945.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
@@ -935,18 +1093,20 @@
                 </li>
                 <li class="gallery-category fade-elem" data-color="#EEF3F6">
                     <div class="gallery-item-header">
-                        <span class="gallery-num">02</span>
-                        <h3 class="gallery-title">LANDSCAPE <span style="font-family: var(--font-label); font-size: 0.5em; letter-spacing: 0.1em; color: var(--color-text-light); vertical-align: middle;">- Hokkaido -</span></h3>
-                        <p class="gallery-desc"></p>
+                        <div class="gallery-header-info">
+                            <span class="gallery-num">02</span>
+                            <h3 class="gallery-title">LANDSCAPE <span style="font-family: var(--font-label); font-size: 0.5em; letter-spacing: 0.1em; color: var(--color-text-light); vertical-align: middle;">- Hokkaido -</span></h3>
+                        </div>
+                        <div class="gallery-header-thumb">
+                            <img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765092/th_DSC03657-Edit-2-Edit_7_lmczvw.jpg" alt="Hokkaido Thumbnail">
+                        </div>
                     </div>
                     <div class="gallery-slideshow">
-                        <!-- random-trackクラスを追加し、ランダム表示を有効化 -->
-                        <div class="slideshow-track random-track">
+                        <div class="slideshow-track random-track" id="track-hokkaido">
                             <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765310/th_10_pehn5h.jpg" loading="lazy" alt="Landscape Hokkaido"></div>
                             <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765309/th_7R301042-Edit-2_fzotd0.jpg" loading="lazy" alt="Landscape Hokkaido"></div>
                             <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765308/th_7R500886_2_jl8elh.jpg" loading="lazy" alt="Landscape Hokkaido"></div>
                             <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765307/th_7R500721_o8pmox.jpg" loading="lazy" alt="Landscape Hokkaido"></div>
-                            <!-- 新しく追加した画像 -->
                             <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765288/th_A1_09503-Enhanced-NR_8_x0odge.jpg" loading="lazy" alt="Landscape Hokkaido"></div>
                             <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765288/th_A7403725_xwqbnj.jpg" loading="lazy" alt="Landscape Hokkaido"></div>
                             <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765286/th_A1_04820_fpoitc.jpg" loading="lazy" alt="Landscape Hokkaido"></div>
@@ -961,12 +1121,16 @@
                 </li>
                 <li class="gallery-category fade-elem" data-color="#F0F5F2">
                     <div class="gallery-item-header">
-                        <span class="gallery-num">03</span>
-                        <h3 class="gallery-title">WILDLIFE</h3>
-                        <p class="gallery-desc"></p>
+                        <div class="gallery-header-info">
+                            <span class="gallery-num">03</span>
+                            <h3 class="gallery-title">WILDLIFE</h3>
+                        </div>
+                        <div class="gallery-header-thumb">
+                            <img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765310/th_3D2CE575-7DB8-40DE-AB83-371EE60AB307_ubgbsr.jpg" alt="Wildlife Thumbnail">
+                        </div>
                     </div>
                     <div class="gallery-slideshow">
-                        <div class="slideshow-track random-track">
+                        <div class="slideshow-track random-track" id="track-wildlife">
                             <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765310/th_3D2CE575-7DB8-40DE-AB83-371EE60AB307_ubgbsr.jpg" loading="lazy" alt="Wildlife"></div>
                             <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765310/th_7R304943_eqweqm.jpg" loading="lazy" alt="Wildlife"></div>
                             <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765308/th_7R307092-Edit_2_lwvwrt.jpg" loading="lazy" alt="Wildlife"></div>
@@ -1004,41 +1168,10 @@
                         </div>
                     </div>
                 </li>
-          <!--      <li class="gallery-category fade-elem" data-color="#FAF5F3">
-                    <div class="gallery-item-header">
-                        <span class="gallery-num">04</span>
-                        <h3 class="gallery-title">PORTRAIT</h3>
-                        <p class="gallery-desc"></p>
-                    </div>
-                    <div class="gallery-slideshow">
-                        <div class="slideshow-track">
-                            <div class="slide"><img src="https://picsum.photos/seed/port1/800/533" loading="lazy" alt="Portrait 1"></div>
-                            <div class="slide"><img src="https://picsum.photos/seed/port2/800/533" loading="lazy" alt="Portrait 2"></div>
-                            <div class="slide"><img src="https://picsum.photos/seed/port3/800/533" loading="lazy" alt="Portrait 3"></div>
-                        </div>
-                    </div>
-                </li> -->
-          <!--  <li class="gallery-category fade-elem" data-color="#F4F3F5">
-                    <div class="gallery-item-header">
-                        <span class="gallery-num">04</span>
-                        <h3 class="gallery-title">MOVIE</h3>
-                        <p class="gallery-desc"></p>
-                    </div>
-                    <div class="gallery-slideshow">
-                        <div class="slideshow-track">
-                            <div class="slide slide-video">
-                                <iframe src="https://www.youtube.com/embed/LXb3EKWsInQ?rel=0" title="Cinematography Work 1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                            </div>
-                            <div class="slide slide-video">
-                                <iframe src="https://www.youtube.com/embed/WNCl-69POro?rel=0" title="Cinematography Work 2" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                            </div>
-                        </div>
-                    </div>
-                </li> -->
-            </ul>
+
+                </ul>
         </section>
 
-        <!-- CHRONICLE -->
         <section id="chronicle">
             <h2 class="section-title fade-elem">CHRONICLE</h2>
             
@@ -1050,7 +1183,6 @@
             </div>
 
             <div class="chronicle-container">
-                <!-- WORK -->
                 <div class="chronicle-row fade-elem" data-category="work">
                     <div class="chronicle-year">2026</div>
                     <div class="chronicle-content">
@@ -1146,7 +1278,6 @@
                     </div>
                 </div>
 
-                <!-- AWARD -->
                 <div class="chronicle-row fade-elem" data-category="award">
                     <div class="chronicle-year">2023</div>
                     <div class="chronicle-content">
@@ -1199,7 +1330,6 @@
                     </div>
                 </div>
 
-                <!-- EXHIBITION -->
                 <div class="chronicle-row fade-elem" data-category="exhibition">
                     <div class="chronicle-year">2026</div>
                     <div class="chronicle-content">
@@ -1276,15 +1406,13 @@
             </div>
         </section>
 
-        <!-- CONTACT -->
         <section id="contact" class="fade-elem">
-            <h2 class="section-title">INQUIRY</h2>
+            <h2 class="section-title">CONTACT</h2>
             <p class="text-label" style="text-align: center; color: var(--color-text-light);">
                各種ご依頼・ご相談は下記アドレスからお願いいたします。
             </p>
             <div class="contact-email-wrapper" id="contact-email-wrapper">
-                <!-- メールアドレスはJavaScriptで動的に生成します（迷惑メール対策） -->
-            </div>
+                </div>
         </section>
     </main>
 
@@ -1294,24 +1422,20 @@
         </div>
         <div class="social-links">
             <a href="https://www.instagram.com/y.abiko.photography" aria-label="Instagram">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
             </a>
             <a href="https://X.com/yoshihiro_abiko" aria-label="X">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg>
             </a>
             <a href="https://www.youtube.com/@yoshihiro_abiko" aria-label="YouTube">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33 2.78 2.78 0 0 0 1.94 2c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.33 29 29 0 0 0-.46-5.33z"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33 2.78 2.78 0 0 0 1.94 2c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.33 29 29 0 0 0-.46-5.33z"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/></svg>
             </a>
-            <!--<a href="#" aria-label="TikTok">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg>
-            </a>-->
             <a href="#" id="footer-mail" aria-label="Mail">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
             </a>
         </div>
     </footer>
 
-    <!-- Image Modal -->
     <div id="image-modal" class="modal">
         <span class="modal-close">&times;</span>
         <span class="modal-prev">
@@ -1321,235 +1445,43 @@
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
         </span>
         <img class="modal-content" id="modal-img" alt="Enlarged gallery image">
+        <div class="modal-counter" id="modal-counter"></div>
     </div>
 
     <!-- JavaScript -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // 画像のランダムシャッフル処理
-            const randomTracks = document.querySelectorAll('.random-track');
-            randomTracks.forEach(track => {
-                const slides = Array.from(track.children);
-                for (let i = slides.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    track.appendChild(slides[j]);
-                }
-            });
 
-            // ギャラリーの初期表示数を制限 (最大9個)
-            const limitGalleryItems = () => {
-                const tracks = document.querySelectorAll('.slideshow-track');
-                tracks.forEach(track => {
-                    const slides = Array.from(track.querySelectorAll('.slide'));
-                    const slideshowContainer = track.parentElement;
-                    
-                    if (slides.length > 9) {
-                        for (let i = 9; i < slides.length; i++) {
-                            slides[i].style.display = 'none';
-                            slides[i].classList.add('hidden-slide');
-                        }
-
-                        const btn = document.createElement('button');
-                        btn.className = 'view-more-btn text-label fade-elem is-visible';
-                        btn.textContent = 'View More';
-                        
-                        btn.addEventListener('click', (e) => {
-                            e.stopPropagation();
-                            const hiddenSlides = track.querySelectorAll('.hidden-slide');
-                            hiddenSlides.forEach(slide => {
-                                slide.style.display = '';
-                                slide.classList.remove('hidden-slide');
-                            });
-                            btn.style.display = 'none';
-                            slideshowContainer.style.maxHeight = '2500vh';
-                        });
-                        
-                        slideshowContainer.appendChild(btn);
-                    }
-                });
-            };
-
-            limitGalleryItems();
-
-            const resetViewMore = (categoryNode) => {
-                const track = categoryNode.querySelector('.slideshow-track');
-                if (!track) return;
-                const slides = Array.from(track.querySelectorAll('.slide'));
-                const btn = track.parentElement.querySelector('.view-more-btn');
+            // == 非同期に依存しないUIロジック ==
+            
+            // スクロール時のパララックス効果とナビゲーションの帯制御
+            window.addEventListener('scroll', () => {
+                const scrollY = window.scrollY;
+                const heroContent = document.getElementById('hero-content');
+                const heroBgContainer = document.getElementById('hero-bg-container');
+                const heroBgs = document.querySelectorAll('.hero-bg');
                 
-                if (slides.length > 9 && btn) {
-                    for (let i = 9; i < slides.length; i++) {
-                        slides[i].style.display = 'none';
-                        slides[i].classList.add('hidden-slide');
-                    }
-                    btn.style.display = 'block';
-                    track.parentElement.style.maxHeight = '';
+                const nav = document.querySelector('nav');
+                if (scrollY > 50) {
+                    nav.classList.add('is-scrolled');
+                } else {
+                    nav.classList.remove('is-scrolled');
                 }
-            };
 
-            // Intersection Observer
-            const observerOptions = {
-                root: null,
-                rootMargin: '0px',
-                threshold: 0.15
-            };
-
-            const observer = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('is-visible');
+                if (scrollY < window.innerHeight) {
+                    if (heroContent) {
+                        heroContent.style.transform = `translateY(${scrollY * 0.3}px)`;
+                        heroContent.style.opacity = 1 - (scrollY / 500);
                     }
-                });
-            }, observerOptions);
-
-            const fadeElements = document.querySelectorAll('.fade-elem');
-            fadeElements.forEach(el => observer.observe(el));
-
-            // Gallery Accordion & Hover Background Logic
-            const galleryCategories = document.querySelectorAll('.gallery-category');
-            const gallerySection = document.getElementById('gallery');
-
-            galleryCategories.forEach(category => {
-                category.addEventListener('mouseenter', () => {
-                    const hoverColor = category.getAttribute('data-color');
-                    if(hoverColor) {
-                        gallerySection.style.backgroundColor = hoverColor;
+                    if (heroBgContainer) {
+                        heroBgContainer.style.transform = `translateY(${scrollY * 0.15}px)`;
                     }
-                });
-
-                category.addEventListener('mouseleave', () => {
-                    const activeCategory = document.querySelector('.gallery-category.is-active');
-                    if(activeCategory) {
-                         const activeColor = activeCategory.getAttribute('data-color');
-                         gallerySection.style.backgroundColor = activeColor || 'transparent';
-                    } else {
-                         gallerySection.style.backgroundColor = 'transparent';
-                    }
-                });
-
-                const header = category.querySelector('.gallery-item-header');
-                header.addEventListener('click', () => {
-                    const isActive = category.classList.contains('is-active');
-                    
-                    galleryCategories.forEach(c => {
-                        c.classList.remove('is-active');
-                        resetViewMore(c);
-                    });
-
-                    if (!isActive) {
-                        category.classList.add('is-active');
-                        const activeColor = category.getAttribute('data-color');
-                        if(activeColor) {
-                             gallerySection.style.backgroundColor = activeColor;
-                        }
-
-                        setTimeout(() => {
-                            const navHeight = document.querySelector('nav').offsetHeight || 80;
-                            const targetY = header.getBoundingClientRect().top + window.pageYOffset - navHeight - 20;
-                            
-                            window.scrollTo({
-                                top: targetY,
-                                behavior: 'smooth'
-                            });
-                        }, 300);
-                    }
-                });
-            });
-            
-            // Image Modal Logic
-            const modal = document.getElementById('image-modal');
-            const modalImg = document.getElementById('modal-img');
-            const closeBtn = document.querySelector('.modal-close');
-            const prevBtn = document.querySelector('.modal-prev');
-            const nextBtn = document.querySelector('.modal-next');
-            const allGalleryImages = document.querySelectorAll('.slide img');
-            
-            let currentCategoryImagesArray = [];
-            let currentImageIndex = 0;
-
-            const showModalImage = (index) => {
-                modal.style.display = 'flex';
-                setTimeout(() => {
-                    modal.classList.add('is-open');
-                }, 10);
-                modalImg.src = currentCategoryImagesArray[index].src;
-            };
-
-            allGalleryImages.forEach((img) => {
-                img.addEventListener('click', (e) => {
-                    const track = img.closest('.slideshow-track');
-                    if (track) {
-                        currentCategoryImagesArray = Array.from(track.querySelectorAll('.slide img'));
-                        currentImageIndex = currentCategoryImagesArray.indexOf(img);
-                        showModalImage(currentImageIndex);
-                    }
-                });
-            });
-
-            const closeModal = () => {
-                modal.classList.remove('is-open');
-                setTimeout(() => {
-                    modal.style.display = 'none';
-                    modalImg.src = '';
-                }, 400);
-            };
-
-            const showPrevImage = (e) => {
-                if(e) e.stopPropagation();
-                if (currentCategoryImagesArray.length > 0) {
-                    currentImageIndex = (currentImageIndex - 1 + currentCategoryImagesArray.length) % currentCategoryImagesArray.length;
-                    modalImg.src = currentCategoryImagesArray[currentImageIndex].src;
-                }
-            };
-
-            const showNextImage = (e) => {
-                if(e) e.stopPropagation();
-                if (currentCategoryImagesArray.length > 0) {
-                    currentImageIndex = (currentImageIndex + 1) % currentCategoryImagesArray.length;
-                    modalImg.src = currentCategoryImagesArray[currentImageIndex].src;
-                }
-            };
-
-            closeBtn.addEventListener('click', closeModal);
-            prevBtn.addEventListener('click', showPrevImage);
-            nextBtn.addEventListener('click', showNextImage);
-            
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) {
-                    closeModal();
-                }
-            });
-
-            document.addEventListener('keydown', (e) => {
-                if (modal.classList.contains('is-open')) {
-                    if (e.key === 'Escape') closeModal();
-                    if (e.key === 'ArrowLeft') showPrevImage();
-                    if (e.key === 'ArrowRight') showNextImage();
-                }
-            });
-
-            // Chronicle Tabs Logic
-            const chronicleTabs = document.querySelectorAll('.chronicle-tab');
-            const chronicleRows = document.querySelectorAll('.chronicle-row');
-
-            chronicleTabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    chronicleTabs.forEach(t => t.classList.remove('is-active'));
-                    tab.classList.add('is-active');
-
-                    const filter = tab.getAttribute('data-filter');
-
-                    chronicleRows.forEach(row => {
-                        if (filter === 'all' || row.getAttribute('data-category') === filter) {
-                            row.style.display = '';
-                            row.style.animation = 'none';
-                            row.offsetHeight;
-                            row.style.animation = null;
-                        } else {
-                            row.style.display = 'none';
+                    heroBgs.forEach(bg => {
+                        if (bg.classList.contains('is-active')) {
+                            bg.style.transform = `scale(${1 + scrollY * 0.0002})`;
                         }
                     });
-                });
+                }
             });
 
             // Hero Slideshow Logic
@@ -1560,6 +1492,7 @@
                     heroBgs[currentHeroIdx].classList.remove('is-active');
                     currentHeroIdx = (currentHeroIdx + 1) % heroBgs.length;
                     heroBgs[currentHeroIdx].classList.add('is-active');
+                    heroBgs[currentHeroIdx].style.transform = `scale(1)`;
                 }, 7000);
             }
 
@@ -1569,11 +1502,45 @@
                 heroElems.forEach(el => el.classList.add('is-visible'));
             }, 100);
 
+            // Intersection Observer
+            const observerOptions = {
+                root: null, rootMargin: '0px', threshold: 0.15
+            };
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    }
+                });
+            }, observerOptions);
+            const fadeElements = document.querySelectorAll('.fade-elem');
+            fadeElements.forEach(el => observer.observe(el));
+
+            // Chronicle Tabs Logic
+            const chronicleTabs = document.querySelectorAll('.chronicle-tab');
+            const chronicleRows = document.querySelectorAll('.chronicle-row');
+            chronicleTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    chronicleTabs.forEach(t => t.classList.remove('is-active'));
+                    tab.classList.add('is-active');
+                    const filter = tab.getAttribute('data-filter');
+                    chronicleRows.forEach(row => {
+                        if (filter === 'all' || row.getAttribute('data-category') === filter) {
+                            row.style.display = '';
+                            row.style.animation = 'none';
+                            row.offsetHeight; 
+                            row.style.animation = null;
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    });
+                });
+            });
+
             // スパム対策（メールアドレス動的生成）
             const mailUser = "yoshihiro.abiko14";
             const mailDomain = "gmail.com";
             const fullEmail = mailUser + "@" + mailDomain;
-
             const contactWrapper = document.getElementById('contact-email-wrapper');
             if (contactWrapper) {
                 const mailLink = document.createElement('a');
@@ -1582,7 +1549,6 @@
                 mailLink.className = "contact-email-link";
                 contactWrapper.appendChild(mailLink);
             }
-
             const footerMail = document.getElementById('footer-mail');
             if (footerMail) {
                 footerMail.href = "mailto:" + fullEmail;
@@ -1591,14 +1557,11 @@
             // ハンバーガーメニューの制御
             const hamburger = document.getElementById('hamburger');
             const navLinks = document.getElementById('nav-links');
-
             if (hamburger && navLinks) {
                 hamburger.addEventListener('click', () => {
                     hamburger.classList.toggle('is-active');
                     navLinks.classList.toggle('is-active');
                 });
-
-                // メニュー内のリンクをクリックしたらメニューを閉じる
                 const links = navLinks.querySelectorAll('a');
                 links.forEach(link => {
                     link.addEventListener('click', () => {
@@ -1607,6 +1570,263 @@
                     });
                 });
             }
+
+
+            // == ギャラリーに関する非同期ロジック ==
+            
+            const initGallery = async () => {
+                const cloudName = 'dqubrs4d3';
+                
+                // Cloudinaryからタグに紐づく画像一覧を取得する関数
+                async function loadCloudinaryGallery(tag, trackId) {
+                    const track = document.getElementById(trackId);
+                    if (!track) return;
+                    
+                    try {
+                        const response = await fetch(`https://res.cloudinary.com/${cloudName}/image/list/${tag}.json`);
+                        if (!response.ok) throw new Error('Cloudinary API error');
+                        
+                        const data = await response.json();
+                        
+                        if(data.resources && data.resources.length > 0) {
+                            track.innerHTML = ''; // HTMLの画像をクリア
+                            data.resources.forEach(res => {
+                                const imgUrl = `https://res.cloudinary.com/${cloudName}/image/upload/v${res.version}/${res.public_id}.${res.format}`;
+                                const slide = document.createElement('div');
+                                slide.className = 'slide';
+                                const img = document.createElement('img');
+                                img.src = imgUrl;
+                                img.loading = 'lazy';
+                                img.alt = `Gallery Image ${tag}`;
+                                slide.appendChild(img);
+                                track.appendChild(slide);
+                            });
+                        }
+                    } catch (error) {
+                        console.warn(`[Cloudinary] ${tag} のリスト取得に失敗しました。設定(Resource list)を確認してください。初期画像を使用します。`);
+                    }
+                }
+
+                // 1. KAMIFURANOセクションの画像を自動取得して書き換え
+                await loadCloudinaryGallery('kamifurano', 'track-kamifurano');
+                
+                // HOKKAIDO と WILDLIFE セクションも自動取得を有効化
+                await loadCloudinaryGallery('hokkaido', 'track-hokkaido');
+                await loadCloudinaryGallery('wildlife', 'track-wildlife');
+
+                // 2. 画像が出揃った後にギャラリーの各種機能を初期化
+                
+                // 画像のランダムシャッフル処理
+                const randomTracks = document.querySelectorAll('.random-track');
+                randomTracks.forEach(track => {
+                    const slides = Array.from(track.children);
+                    for (let i = slides.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        track.appendChild(slides[j]);
+                    }
+                });
+
+                // サムネイルを中身の写真から毎回ランダムに設定
+                const allGalleryCategories = document.querySelectorAll('.gallery-category');
+                allGalleryCategories.forEach(category => {
+                    const slideImages = category.querySelectorAll('.slide img');
+                    const thumbImg = category.querySelector('.gallery-header-thumb img');
+                    
+                    if (slideImages.length > 0 && thumbImg) {
+                        const randomIndex = Math.floor(Math.random() * slideImages.length);
+                        thumbImg.src = slideImages[randomIndex].src;
+                    }
+                });
+
+                // ギャラリーの初期表示数を制限 (最大9個)
+                const limitGalleryItems = () => {
+                    const tracks = document.querySelectorAll('.slideshow-track');
+                    tracks.forEach(track => {
+                        const slides = Array.from(track.querySelectorAll('.slide'));
+                        const slideshowContainer = track.parentElement;
+                        
+                        if (slides.length > 9) {
+                            for (let i = 9; i < slides.length; i++) {
+                                slides[i].style.display = 'none';
+                                slides[i].classList.add('hidden-slide');
+                            }
+
+                            const btn = document.createElement('button');
+                            btn.className = 'view-more-btn fade-elem is-visible';
+                            btn.textContent = 'View More';
+                            
+                            btn.addEventListener('click', (e) => {
+                                e.stopPropagation();
+                                const hiddenSlides = track.querySelectorAll('.hidden-slide');
+                                hiddenSlides.forEach(slide => {
+                                    slide.style.display = '';
+                                    slide.classList.remove('hidden-slide');
+                                });
+                                btn.style.display = 'none';
+                                slideshowContainer.style.maxHeight = '2500vh';
+                            });
+                            
+                            slideshowContainer.appendChild(btn);
+                        }
+                    });
+                };
+
+                limitGalleryItems();
+
+                const resetViewMore = (categoryNode) => {
+                    const track = categoryNode.querySelector('.slideshow-track');
+                    if (!track) return;
+                    const slides = Array.from(track.querySelectorAll('.slide'));
+                    const btn = track.parentElement.querySelector('.view-more-btn');
+                    
+                    if (slides.length > 9 && btn) {
+                        for (let i = 9; i < slides.length; i++) {
+                            slides[i].style.display = 'none';
+                            slides[i].classList.add('hidden-slide');
+                        }
+                        btn.style.display = 'block';
+                        track.parentElement.style.maxHeight = '';
+                    }
+                };
+
+                // アコーディオン & 背景色ホバーロジック
+                const gallerySection = document.getElementById('gallery');
+                allGalleryCategories.forEach(category => {
+                    const header = category.querySelector('.gallery-item-header');
+                    header.addEventListener('click', () => {
+                        const isActive = category.classList.contains('is-active');
+                        
+                        allGalleryCategories.forEach(c => {
+                            c.classList.remove('is-active');
+                            resetViewMore(c);
+                        });
+
+                        if (!isActive) {
+                            category.classList.add('is-active');
+
+                            setTimeout(() => {
+                                const navHeight = document.querySelector('nav').offsetHeight || 80;
+                                const targetY = header.getBoundingClientRect().top + window.pageYOffset - navHeight - 20;
+                                
+                                window.scrollTo({
+                                    top: targetY,
+                                    behavior: 'smooth'
+                                });
+                            }, 300);
+                        }
+                    });
+
+                    category.addEventListener('mouseenter', () => {
+                        const hoverColor = category.getAttribute('data-color');
+                        if(hoverColor) {
+                            gallerySection.style.backgroundColor = hoverColor;
+                        }
+                    });
+
+                    category.addEventListener('mouseleave', () => {
+                        const activeCategory = document.querySelector('.gallery-category.is-active');
+                        if(activeCategory) {
+                             const activeColor = activeCategory.getAttribute('data-color');
+                             gallerySection.style.backgroundColor = activeColor || 'transparent';
+                        } else {
+                             gallerySection.style.backgroundColor = 'transparent';
+                        }
+                    });
+                });
+                
+                // モーダルロジック
+                const modal = document.getElementById('image-modal');
+                const modalImg = document.getElementById('modal-img');
+                const closeBtn = document.querySelector('.modal-close');
+                const prevBtn = document.querySelector('.modal-prev');
+                const nextBtn = document.querySelector('.modal-next');
+                const modalCounter = document.getElementById('modal-counter');
+                const allGalleryImages = document.querySelectorAll('.slide img');
+                
+                let currentCategoryImagesArray = [];
+                let currentImageIndex = 0;
+
+                const updateModalCounter = () => {
+                    if (modalCounter && currentCategoryImagesArray.length > 0) {
+                        // 1桁の場合はゼロ埋めする（例: 1 -> 01）
+                        const current = String(currentImageIndex + 1).padStart(2, '0');
+                        const total = String(currentCategoryImagesArray.length).padStart(2, '0');
+                        
+                        modalCounter.innerHTML = `
+                            <span class="current-num">${current}</span>
+                            <span class="divider"></span>
+                            <span class="total-num">${total}</span>
+                        `;
+                    }
+                };
+
+                const showModalImage = (index) => {
+                    modal.style.display = 'flex';
+                    setTimeout(() => {
+                        modal.classList.add('is-open');
+                    }, 10);
+                    modalImg.src = currentCategoryImagesArray[index].src;
+                    updateModalCounter();
+                };
+
+                allGalleryImages.forEach((img) => {
+                    img.addEventListener('click', (e) => {
+                        const track = img.closest('.slideshow-track');
+                        if (track) {
+                            currentCategoryImagesArray = Array.from(track.querySelectorAll('.slide img'));
+                            currentImageIndex = currentCategoryImagesArray.indexOf(img);
+                            showModalImage(currentImageIndex);
+                        }
+                    });
+                });
+
+                const closeModal = () => {
+                    modal.classList.remove('is-open');
+                    setTimeout(() => {
+                        modal.style.display = 'none';
+                        modalImg.src = '';
+                    }, 400);
+                };
+
+                const showPrevImage = (e) => {
+                    if(e) e.stopPropagation();
+                    if (currentCategoryImagesArray.length > 0) {
+                        currentImageIndex = (currentImageIndex - 1 + currentCategoryImagesArray.length) % currentCategoryImagesArray.length;
+                        modalImg.src = currentCategoryImagesArray[currentImageIndex].src;
+                        updateModalCounter();
+                    }
+                };
+
+                const showNextImage = (e) => {
+                    if(e) e.stopPropagation();
+                    if (currentCategoryImagesArray.length > 0) {
+                        currentImageIndex = (currentImageIndex + 1) % currentCategoryImagesArray.length;
+                        modalImg.src = currentCategoryImagesArray[currentImageIndex].src;
+                        updateModalCounter();
+                    }
+                };
+
+                closeBtn.addEventListener('click', closeModal);
+                prevBtn.addEventListener('click', showPrevImage);
+                nextBtn.addEventListener('click', showNextImage);
+                
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        closeModal();
+                    }
+                });
+
+                document.addEventListener('keydown', (e) => {
+                    if (modal.classList.contains('is-open')) {
+                        if (e.key === 'Escape') closeModal();
+                        if (e.key === 'ArrowLeft') showPrevImage();
+                        if (e.key === 'ArrowRight') showNextImage();
+                    }
+                });
+            };
+
+            // ギャラリーの初期化を実行
+            initGallery();
         });
     </script>
 </body>
