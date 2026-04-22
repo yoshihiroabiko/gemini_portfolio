@@ -76,46 +76,6 @@
             font-size: 0.8rem;
         }
 
-        /* Loading Screen */
-        #loader {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            background-color: #000;
-            z-index: 99999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: opacity 1.5s cubic-bezier(0.25, 1, 0.5, 1), visibility 1.5s;
-        }
-
-        #loader.is-hidden {
-            opacity: 0;
-            visibility: hidden;
-        }
-
-        .loader-text {
-            font-family: var(--font-futura);
-            font-size: clamp(1.5rem, 4vw, 3rem);
-            font-weight: 200;
-            letter-spacing: 0.4em;
-            color: #fff;
-            text-transform: uppercase;
-            text-indent: 0.4em;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: loaderFadeIn 2s cubic-bezier(0.25, 1, 0.5, 1) forwards 0.5s;
-        }
-
-        @keyframes loaderFadeIn {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
         /* Film Grain Overlay */
         @keyframes grain {
             0%, 100% { transform: translate(0, 0); }
@@ -260,6 +220,7 @@
         /* --- HERO Section --- */
         #hero {
             height: 100vh;
+            height: 100dvh; /* スマホのアドレスバー対策 */
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -805,6 +766,104 @@
             opacity: 0.5;
         }
 
+        /* Contact Form Styles */
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            margin-top: 3rem;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-label {
+            font-family: var(--font-label);
+            font-size: 0.75rem;
+            color: var(--color-text-light);
+            letter-spacing: 0.2em;
+        }
+
+        .form-input, .form-textarea {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--color-gold-light);
+            padding: 0.8rem 0;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            color: var(--color-text);
+            transition: border-color 0.3s ease, outline 0.3s ease;
+            border-radius: 0;
+            appearance: none;
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-bottom-color: var(--color-gold);
+        }
+        
+        .form-input::placeholder, .form-textarea::placeholder {
+            color: rgba(122, 120, 113, 0.4);
+            font-weight: 300;
+        }
+
+        .submit-btn {
+            align-self: center;
+            margin-top: 1rem;
+            background: transparent;
+            border: 1px solid var(--color-gold);
+            color: var(--color-text);
+            padding: 1rem 4rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: var(--font-label);
+            letter-spacing: 0.2em;
+            font-size: 0.85rem;
+            border-radius: 2px;
+        }
+
+        .submit-btn:hover {
+            background-color: var(--color-gold);
+            color: #fff;
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .form-status {
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            text-align: center;
+            margin-top: 1rem;
+            min-height: 1.5em;
+            color: var(--color-text);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        
+        .form-status.is-visible {
+            opacity: 1;
+        }
+        
+        .form-status.error {
+            color: #cc0000;
+        }
+
         /* Footer */
         footer {
             padding: 2vw 4vw;
@@ -1012,6 +1071,11 @@
                 background-color: var(--color-gold) !important;
             }
 
+            /* モバイル版のスクロール文字位置調整 */
+            .scroll-indicator {
+                bottom: 12vh;
+            }
+
             .news-container {
                 flex-direction: column;
                 gap: 0.8rem;
@@ -1096,11 +1160,6 @@
     </style>
 </head>
 <body>
-
-    <!-- Loading Screen -->
-    <div id="loader">
-        <div class="loader-text">Yoshihiro Abiko</div>
-    </div>
 
     <div class="grain-overlay"></div>
 
@@ -1563,11 +1622,25 @@
         <section id="contact" class="fade-elem">
             <h2 class="section-title">CONTACT</h2>
             <p class="text-label" style="text-align: center; color: var(--color-text-light);">
-               各種ご依頼・ご相談は下記アドレスからお願いいたします。
+               各種ご依頼・ご相談は下記フォームからお願いいたします。
             </p>
-            <div class="contact-email-wrapper" id="contact-email-wrapper">
-                <!-- メールアドレスはJavaScriptで動的に生成します -->
-            </div>
+            
+            <form class="contact-form fade-elem" id="contact-form" style="transition-delay: 0.2s;" action="https://formspree.io/f/xvzdwdzg" method="POST">
+                <div class="form-group">
+                    <label for="name" class="form-label">Name</label>
+                    <input type="text" id="name" name="name" class="form-input" placeholder="お名前" required>
+                </div>
+                <div class="form-group">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" id="email" name="email" class="form-input" placeholder="メールアドレス" required>
+                </div>
+                <div class="form-group">
+                    <label for="message" class="form-label">Message</label>
+                    <textarea id="message" name="message" class="form-textarea" placeholder="お問い合わせ内容" required></textarea>
+                </div>
+                <button type="submit" class="submit-btn" id="submit-btn">SEND MESSAGE</button>
+                <p id="form-status" class="form-status"></p>
+            </form>
         </section>
     </main>
 
@@ -1591,9 +1664,6 @@
         </div>
     </footer>
 
-    <!-- Image Modal -->
-    </footer>
-
     <div id="image-modal" class="modal">
         <span class="modal-close">&times;</span>
         <span class="modal-prev">
@@ -1611,20 +1681,11 @@
 
             // == 非同期に依存しないUIロジック ==
             
-            // Loading Screen & Hero Animation
-            const loader = document.getElementById('loader');
-            window.addEventListener('load', () => {
-                // 最低でも文字のアニメーションを見せるための待機時間
-                setTimeout(() => {
-                    loader.classList.add('is-hidden');
-                    
-                    // ローディングが消え始めた直後にヒーローの文字を出す
-                    setTimeout(() => {
-                        const heroElems = document.querySelectorAll('#hero .fade-elem');
-                        heroElems.forEach(el => el.classList.add('is-visible'));
-                    }, 800);
-                }, 2800);
-            });
+            // 初回アニメーション
+            setTimeout(() => {
+                const heroElems = document.querySelectorAll('#hero .fade-elem');
+                heroElems.forEach(el => el.classList.add('is-visible'));
+            }, 100);
 
             // スクロール時のパララックス効果とナビゲーションの帯制御
             window.addEventListener('scroll', () => {
@@ -1725,14 +1786,6 @@
             const mailUser = "yoshihiro.abiko14";
             const mailDomain = "gmail.com";
             const fullEmail = mailUser + "@" + mailDomain;
-            const contactWrapper = document.getElementById('contact-email-wrapper');
-            if (contactWrapper) {
-                const mailLink = document.createElement('a');
-                mailLink.href = "mailto:" + fullEmail;
-                mailLink.textContent = fullEmail;
-                mailLink.className = "contact-email-link";
-                contactWrapper.appendChild(mailLink);
-            }
             const footerMail = document.getElementById('footer-mail');
             if (footerMail) {
                 footerMail.href = "mailto:" + fullEmail;
@@ -1752,6 +1805,60 @@
                         hamburger.classList.remove('is-active');
                         navLinks.classList.remove('is-active');
                     });
+                });
+            }
+
+            // コンタクトフォームの非同期送信ロジック
+            const contactForm = document.getElementById("contact-form");
+            const formStatus = document.getElementById("form-status");
+            const submitBtn = document.getElementById("submit-btn");
+
+            if (contactForm) {
+                contactForm.addEventListener("submit", async function(e) {
+                    e.preventDefault(); // 画面遷移を防ぐ
+                    
+                    const originalBtnText = submitBtn.textContent;
+                    submitBtn.textContent = "SENDING...";
+                    submitBtn.disabled = true;
+                    formStatus.classList.remove("is-visible", "error");
+                    formStatus.textContent = "";
+
+                    const data = new FormData(contactForm);
+                    
+                    try {
+                        const response = await fetch(contactForm.action, {
+                            method: contactForm.method,
+                            body: data,
+                            headers: {
+                                'Accept': 'application/json'
+                            }
+                        });
+                        
+                        if (response.ok) {
+                            formStatus.textContent = "メッセージの送信が完了しました。ありがとうございます。";
+                            formStatus.classList.add("is-visible");
+                            contactForm.reset(); // フォームの中身を空にする
+                        } else {
+                            const responseData = await response.json();
+                            if (Object.hasOwn(responseData, 'errors')) {
+                                formStatus.textContent = responseData["errors"].map(error => error["message"]).join(", ");
+                            } else {
+                                formStatus.textContent = "送信に失敗しました。時間をおいて再度お試しください。";
+                            }
+                            formStatus.classList.add("is-visible", "error");
+                        }
+                    } catch (error) {
+                        formStatus.textContent = "送信に失敗しました。通信環境をご確認の上、再度お試しください。";
+                        formStatus.classList.add("is-visible", "error");
+                    } finally {
+                        submitBtn.textContent = originalBtnText;
+                        submitBtn.disabled = false;
+                        
+                        // 6秒後にメッセージをフワッと消す
+                        setTimeout(() => {
+                            formStatus.classList.remove("is-visible");
+                        }, 6000);
+                    }
                 });
             }
 
