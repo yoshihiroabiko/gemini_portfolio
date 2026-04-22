@@ -564,6 +564,8 @@
             gap: 1.5vw;
             padding: 1rem 0;
         }
+        
+        /* --- Reveal Animation Styles --- */
         .slide {
             width: 100%;
             aspect-ratio: 3 / 2;
@@ -571,13 +573,34 @@
             position: relative;
             overflow: hidden;
         }
+        .slide::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-color: var(--color-bg);
+            z-index: 2;
+            transform-origin: top;
+            transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1);
+        }
         .slide img {
             width: 100%; height: 100%;
             object-fit: cover;
-            transition: transform 1.5s ease;
+            transform: scale(1.25);
+            transition: transform 1.6s cubic-bezier(0.19, 1, 0.22, 1);
             cursor: pointer;
         }
-        .slide:hover img { transform: scale(1.03); }
+        .slide.is-revealed::after {
+            transform: scaleY(0);
+        }
+        .slide.is-revealed img {
+            transform: scale(1);
+        }
+        .slide.is-revealed:hover img {
+            transform: scale(1.03);
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        /* -------------------------------- */
+        
         .slide.slide-video { aspect-ratio: 16 / 9; }
         .slide iframe { width: 100%; height: 100%; border: none; display: block; }
         .view-more-btn {
@@ -1053,76 +1076,6 @@
         .modal-counter .divider { width: 40px; height: 1px; background-color: var(--color-gold-light); opacity: 0.4; }
         .modal-counter .total-num { font-size: 0.75rem; letter-spacing: 0.1em; opacity: 0.6; font-weight: 300; }
 
-        /* Modal Info (EXIF) */
-        .modal-info-btn {
-            position: absolute;
-            bottom: 2.5rem;
-            right: 4vw;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: 1px solid rgba(235, 229, 217, 0.5);
-            color: var(--color-gold-light);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            z-index: 1002;
-            transition: all 0.3s ease;
-            background: rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(5px);
-        }
-        .modal-info-btn:hover, .modal-info-btn.is-active {
-            background-color: var(--color-gold);
-            color: #fff;
-            border-color: var(--color-gold);
-        }
-        .modal-info-panel {
-            position: absolute;
-            bottom: 6rem;
-            right: 4vw;
-            background: rgba(20, 20, 18, 0.65);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(210, 196, 167, 0.2);
-            padding: 1.5rem;
-            border-radius: 2px;
-            color: var(--color-gold-light);
-            z-index: 1002;
-            opacity: 0;
-            transform: translateY(15px);
-            pointer-events: none;
-            transition: opacity 0.4s var(--ease), transform 0.4s var(--ease);
-            font-family: var(--font-label);
-            min-width: 220px;
-        }
-        .modal-info-panel.is-open {
-            opacity: 1;
-            transform: translateY(0);
-            pointer-events: auto;
-        }
-        .info-item {
-            margin-bottom: 1rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.3rem;
-        }
-        .info-item:last-child {
-            margin-bottom: 0;
-        }
-        .info-label {
-            font-size: 0.55rem;
-            color: rgba(255, 255, 255, 0.4);
-            text-transform: uppercase;
-            letter-spacing: 0.25em;
-        }
-        .info-value {
-            font-size: 0.85rem;
-            font-weight: 300;
-            color: rgba(255, 255, 255, 0.9);
-            letter-spacing: 0.05em;
-        }
-
         /* Responsive */
         @media (max-width: 768px) {
             .hamburger { display: block; }
@@ -1227,17 +1180,6 @@
             .chron__group-label { padding-top: 0; }
 
             footer { flex-direction: column; gap: 2rem; text-align: center; }
-
-            .modal-info-btn {
-                bottom: 2rem;
-                right: 1.5rem;
-            }
-            .modal-info-panel {
-                bottom: 5.5rem;
-                right: 1.5rem;
-                left: 1.5rem;
-                min-width: auto;
-            }
         }
     </style>
 </head>
@@ -1802,25 +1744,6 @@
         </span>
         <img class="modal-content" id="modal-img" alt="Enlarged gallery image">
         <div class="modal-counter" id="modal-counter"></div>
-
-        <!-- EXIF Info Panel -->
-        <div class="modal-info-btn" id="modal-info-btn" aria-label="Toggle Image Info">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
-        </div>
-        <div class="modal-info-panel" id="modal-info-panel">
-            <div class="info-item">
-                <span class="info-label">Camera</span>
-                <span class="info-value" id="info-camera">-</span>
-            </div>
-            <div class="info-item">
-                <span class="info-label">Lens</span>
-                <span class="info-value" id="info-lens">-</span>
-            </div>
-            <div class="info-item">
-                <span class="info-label">Settings</span>
-                <span class="info-value" id="info-settings">-</span>
-            </div>
-        </div>
     </div>
 
     <script>
@@ -1926,63 +1849,27 @@
                 });
             }
 
-            // コンタクトフォームの非同期送信ロジック
-            const contactForm = document.getElementById("contact-form");
-            const formStatus = document.getElementById("form-status");
-            const submitBtn = document.getElementById("submit-btn");
-
-            if (contactForm) {
-                contactForm.addEventListener("submit", async function(e) {
-                    e.preventDefault(); // 画面遷移を防ぐ
-                    
-                    const originalBtnText = submitBtn.textContent;
-                    submitBtn.textContent = "SENDING...";
-                    submitBtn.disabled = true;
-                    formStatus.classList.remove("is-visible", "error");
-                    formStatus.textContent = "";
-
-                    const data = new FormData(contactForm);
-                    
-                    try {
-                        const response = await fetch(contactForm.action, {
-                            method: contactForm.method,
-                            body: data,
-                            headers: {
-                                'Accept': 'application/json'
-                            }
-                        });
-                        
-                        if (response.ok) {
-                            formStatus.textContent = "メッセージの送信が完了しました。ありがとうございます。";
-                            formStatus.classList.add("is-visible");
-                            contactForm.reset(); // フォームの中身を空にする
-                        } else {
-                            const responseData = await response.json();
-                            if (Object.hasOwn(responseData, 'errors')) {
-                                formStatus.textContent = responseData["errors"].map(error => error["message"]).join(", ");
-                            } else {
-                                formStatus.textContent = "送信に失敗しました。時間をおいて再度お試しください。";
-                            }
-                            formStatus.classList.add("is-visible", "error");
-                        }
-                    } catch (error) {
-                        formStatus.textContent = "送信に失敗しました。通信環境をご確認の上、再度お試しください。";
-                        formStatus.classList.add("is-visible", "error");
-                    } finally {
-                        submitBtn.textContent = originalBtnText;
-                        submitBtn.disabled = false;
-                        
-                        // 6秒後にメッセージをフワッと消す
-                        setTimeout(() => {
-                            formStatus.classList.remove("is-visible");
-                        }, 6000);
-                    }
-                });
-            }
-
             // Gallery + Modal
             const initGallery = async () => {
                 const cloudName = 'dqubrs4d3';
+
+                // --- Reveal Observer の追加 ---
+                const slideObserver = new IntersectionObserver((entries, obs) => {
+                    let delay = 0;
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            setTimeout(() => {
+                                entry.target.classList.add('is-revealed');
+                            }, delay);
+                            delay += 120; // 複数同時に画面に入った時の遅延（ウェーブ効果）
+                            obs.unobserve(entry.target);
+                        }
+                    });
+                }, { root: null, rootMargin: '0px 0px -40px 0px', threshold: 0.1 });
+
+                // 万が一Cloudinary連携に失敗した時のために、HTML上の既存slideも監視
+                document.querySelectorAll('.slide').forEach(slide => slideObserver.observe(slide));
+                // ------------------------------
 
                 async function loadCloudinaryGallery(tag, trackId) {
                     const track = document.getElementById(trackId);
@@ -2002,44 +1889,11 @@
                                 img.loading = 'lazy';
                                 img.alt = `Gallery Image ${tag}`;
 
-                                // --- EXIFデータのデモ用ロジック ---
-                                let camera = 'SONY ILCE-7RM4';
-                                let lens = 'FE 24-70mm F2.8 GM II';
-                                let settings = '35mm | f/8 | 1/125s | ISO 100';
-
-                                if (res.context && res.context.custom) {
-                                    // 本来はCloudinaryに設定されたメタデータを読み込む
-                                    camera = res.context.custom.camera || camera;
-                                    lens = res.context.custom.lens || lens;
-                                    settings = res.context.custom.settings || settings;
-                                } else {
-                                    // メタデータがない場合はファイル名から機材を推測（体験用ダミーデータ）
-                                    if (res.public_id.includes('A1')) {
-                                        camera = 'SONY ILCE-1';
-                                        lens = 'FE 600mm F4 GM OSS';
-                                        settings = '600mm | f/4 | 1/2000s | ISO 800';
-                                    } else if (res.public_id.includes('A7V') || res.public_id.includes('7R5')) {
-                                        camera = 'SONY ILCE-7RM5';
-                                        lens = 'FE 16-35mm F2.8 GM II';
-                                        settings = '16mm | f/11 | 1/60s | ISO 100';
-                                    } else if (res.public_id.includes('A9')) {
-                                        camera = 'SONY ILCE-9M2';
-                                        lens = 'FE 200-600mm F5.6-6.3 G OSS';
-                                        settings = '600mm | f/6.3 | 1/1600s | ISO 1600';
-                                    } else if (res.public_id.includes('DJI') || res.public_id.includes('AIR3')) {
-                                        camera = 'DJI Air 3';
-                                        lens = '24mm equivalent';
-                                        settings = '24mm | f/1.7 | 1/400s | ISO 100';
-                                    }
-                                }
-
-                                img.dataset.camera = camera;
-                                img.dataset.lens = lens;
-                                img.dataset.settings = settings;
-                                // ----------------------------------
-
                                 slide.appendChild(img);
                                 track.appendChild(slide);
+                                
+                                // 追加されたスライドを監視
+                                slideObserver.observe(slide);
                             });
                         }
                     } catch (error) {
@@ -2168,19 +2022,13 @@
                 const prevBtn = document.querySelector('.modal-prev');
                 const nextBtn = document.querySelector('.modal-next');
                 const modalCounter = document.getElementById('modal-counter');
-                
-                const infoBtn = document.getElementById('modal-info-btn');
-                const infoPanel = document.getElementById('modal-info-panel');
-                const infoCamera = document.getElementById('info-camera');
-                const infoLens = document.getElementById('info-lens');
-                const infoSettings = document.getElementById('info-settings');
 
                 const allGalleryImages = document.querySelectorAll('.slide img');
 
                 let currentArray = [];
                 let currentIndex = 0;
 
-                const updateCounterAndInfo = () => {
+                const updateCounter = () => {
                     if (modalCounter && currentArray.length > 0) {
                         const current = String(currentIndex + 1).padStart(2, '0');
                         const total = String(currentArray.length).padStart(2, '0');
@@ -2190,25 +2038,13 @@
                             <span class="total-num">${total}</span>
                         `;
                     }
-                    
-                    // EXIF情報の更新
-                    if (currentArray.length > 0) {
-                        const img = currentArray[currentIndex];
-                        infoCamera.textContent = img.dataset.camera || '-';
-                        infoLens.textContent = img.dataset.lens || '-';
-                        infoSettings.textContent = img.dataset.settings || '-';
-                    }
                 };
 
                 const showModal = (index) => {
                     modal.style.display = 'flex';
                     setTimeout(() => modal.classList.add('is-open'), 10);
                     modalImg.src = currentArray[index].src;
-                    updateCounterAndInfo();
-                    
-                    // モーダルを開くたびにInfoパネルは一旦閉じておく
-                    infoPanel.classList.remove('is-open');
-                    infoBtn.classList.remove('is-active');
+                    updateCounter();
                 };
 
                 allGalleryImages.forEach(img => {
@@ -2232,7 +2068,7 @@
                     if (currentArray.length > 0) {
                         currentIndex = (currentIndex - 1 + currentArray.length) % currentArray.length;
                         modalImg.src = currentArray[currentIndex].src;
-                        updateCounterAndInfo();
+                        updateCounter();
                     }
                 };
 
@@ -2241,32 +2077,16 @@
                     if (currentArray.length > 0) {
                         currentIndex = (currentIndex + 1) % currentArray.length;
                         modalImg.src = currentArray[currentIndex].src;
-                        updateCounterAndInfo();
+                        updateCounter();
                     }
                 };
-
-                // Infoボタンのトグルイベント
-                infoBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    infoPanel.classList.toggle('is-open');
-                    infoBtn.classList.toggle('is-active');
-                });
-                
-                // パネル内をクリックしても閉じないようにする
-                infoPanel.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                });
 
                 closeBtn.addEventListener('click', closeModal);
                 prevBtn.addEventListener('click', showPrev);
                 nextBtn.addEventListener('click', showNext);
                 
                 modal.addEventListener('click', (e) => { 
-                    // モーダル背景クリック時、Infoパネルが開いていればパネルを閉じるだけにする
-                    if (infoPanel.classList.contains('is-open')) {
-                        infoPanel.classList.remove('is-open');
-                        infoBtn.classList.remove('is-active');
-                    } else if (e.target === modal) {
+                    if (e.target === modal) {
                         closeModal();
                     }
                 });
