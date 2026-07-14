@@ -83,7 +83,8 @@
             position: absolute;
             width: 200%; height: 200%;
             top: -50%; left: -50%;
-            background-image: url('https://grainy-gradients.vercel.app/noise.svg');
+            /* 外部依存を排除し SVG ノイズを data URI で埋め込み（REQ-07） */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
             animation: grain 8s steps(10) infinite;
         }
 
@@ -110,6 +111,25 @@
             -webkit-backdrop-filter: blur(10px);
             box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
         }
+        /* ナビ左端のテキストロゴ（REQ-02） */
+        .nav-logo {
+            position: absolute;
+            left: 4vw;
+            z-index: 101;
+            font-family: var(--font-futura);
+            font-size: 0.85rem;
+            font-weight: 300;
+            letter-spacing: 0.35em;
+            text-transform: uppercase;
+            white-space: nowrap;
+            color: rgba(255, 255, 255, 0.9);
+            transition: color 0.4s ease, opacity 0.3s ease;
+        }
+        nav.is-scrolled .nav-logo { color: var(--color-text); }
+        /* モバイルメニュー展開中は明色背景に乗るため濃色へ */
+        nav:has(.nav-links.is-active) .nav-logo { color: var(--color-text); }
+        .nav-logo:hover { opacity: 0.6; }
+
         .nav-links {
             display: flex;
             gap: 2vw;
@@ -238,12 +258,61 @@
             text-indent: 0.5em;
         }
 
-        /* Scroll indicator */
+        /* ヒーロー：拠点・ジャンル行（REQ-01） */
+        .hero-meta {
+            font-family: var(--font-label);
+            font-size: clamp(0.6rem, 1.4vw, 0.78rem);
+            letter-spacing: 0.32em;
+            text-indent: 0.32em;
+            text-transform: uppercase;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.75);
+            margin-top: 1.4rem;
+        }
+        /* ヒーロー：CTA（view-more-btn のヒーロー用バリアント / REQ-01） */
+        .hero-cta {
+            display: inline-block;
+            margin-top: 2.2rem;
+            padding: 0.85rem 2.6rem;
+            border: 1px solid var(--color-gold);
+            border-radius: 2px;
+            color: #fff;
+            background-color: rgba(0, 0, 0, 0.15);
+            font-family: var(--font-label);
+            font-size: 0.8rem;
+            letter-spacing: 0.28em;
+            text-indent: 0.28em;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+        .hero-cta:hover {
+            background-color: var(--color-gold);
+            border-color: var(--color-gold);
+        }
+        /* ヒーロー：実績行（REQ-01） */
+        .hero-cred {
+            position: absolute;
+            bottom: 7rem;
+            left: 0;
+            width: 100%;
+            padding: 0 6vw;
+            z-index: 10;
+            font-family: var(--font-label);
+            font-size: 0.58rem;
+            letter-spacing: 0.28em;
+            text-transform: uppercase;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.55);
+            text-align: center;
+        }
+
+        /* Scroll indicator
+           left/right:0 + align-items:center で中央寄せ。
+           fade-elem の transform(translateY) と競合しないよう translateX を使わない */
         .scroll-indicator {
             position: absolute;
             bottom: 3rem;
-            left: 50%;
-            transform: translateX(-50%);
+            left: 0;
+            right: 0;
             z-index: 10;
             display: flex;
             flex-direction: column;
@@ -497,7 +566,22 @@
         }
         .gallery-header { margin-bottom: var(--space-md); }
         .gallery-list { display: flex; flex-direction: column; }
-        .gallery-category { border-bottom: 1px solid var(--color-gold-light); }
+        .gallery-category { border-bottom: 1px solid var(--color-gold-light); transition: border-color 1.2s ease; }
+
+        /* ============================================================
+           暗室モード — カテゴリ展開中はギャラリー全体を炭色に落とし、
+           写真が発光して見えるようにする（緩急をつける）
+           ============================================================ */
+        #gallery.is-darkroom { background-color: #1A1918; }
+        #gallery.is-darkroom .section-opener__title { color: #FCFBF9; }
+        #gallery.is-darkroom .section-opener::before { color: #ffffff; opacity: 0.07; }
+        #gallery.is-darkroom .gallery-title { color: #FCFBF9; }
+        #gallery.is-darkroom .gallery-title span { color: rgba(255, 255, 255, 0.45) !important; }
+        #gallery.is-darkroom .gallery-category { border-bottom-color: rgba(255, 255, 255, 0.12); }
+        #gallery.is-darkroom .view-more-btn { color: #FCFBF9; }
+        /* リビール幕・スライド下地も暗室色に合わせ、闇から浮かび上がる演出に */
+        #gallery.is-darkroom .slide { background-color: rgba(255, 255, 255, 0.04); }
+        #gallery.is-darkroom .slide::after { background-color: #1A1918; }
         .gallery-item-header {
             display: flex;
             align-items: center;
@@ -548,6 +632,7 @@
             font-size: clamp(1.8rem, 4vw, 3.5rem);
             letter-spacing: 0.05em;
             flex-grow: 1;
+            transition: color 1.2s ease;
         }
         .gallery-slideshow {
             max-height: 0;
@@ -558,20 +643,36 @@
             max-height: 1500vh;
             padding-bottom: 2rem;
         }
+        /* マガジン・グリッド：12カラム基準。7枚周期で
+           「横位置3枚の行」と「縦位置4枚の行」を交互にタイルする */
         .slideshow-track {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1.5vw;
+            grid-template-columns: repeat(12, 1fr);
+            gap: clamp(0.5rem, 1vw, 1rem);
             padding: 1rem 0;
         }
-        
+
         /* --- Reveal Animation Styles --- */
         .slide {
             width: 100%;
-            aspect-ratio: 3 / 2;
+            grid-column: span 3;      /* 既定：縦位置4枚/行 */
+            aspect-ratio: 4 / 5;
             background-color: rgba(0, 0, 0, 0.03);
             position: relative;
             overflow: hidden;
+        }
+        .slide:nth-child(7n+1),
+        .slide:nth-child(7n+2),
+        .slide:nth-child(7n+3) {      /* 横位置3枚の行（1/3幅） */
+            grid-column: span 4;
+            aspect-ratio: 3 / 2;
+        }
+        .slide:nth-child(7n+4),
+        .slide:nth-child(7n+5),
+        .slide:nth-child(7n+6),
+        .slide:nth-child(7n) {        /* 縦位置4枚の行（1/4幅） */
+            grid-column: span 3;
+            aspect-ratio: 4 / 5;
         }
         .slide::after {
             content: '';
@@ -744,13 +845,19 @@
             align-items: baseline;
         }
         .chron__group-label {
+            justify-self: start;
+            align-self: start;
+            display: inline-block;
             font-family: var(--font-label);
-            font-weight: 300;
+            font-weight: 400;
             font-size: 0.6rem;
-            letter-spacing: 0.48em;
+            letter-spacing: 0.28em;
+            text-indent: 0.28em; /* 末尾のレタースペーシング分を左右均等に */
             text-transform: uppercase;
-            color: var(--color-gold);
-            padding-top: 0.4em;
+            color: var(--color-text);
+            background: var(--color-gold-light);
+            padding: 0.4em 0.85em;
+            border-radius: 2px;
         }
         .chron__list {
             list-style: none;
@@ -811,6 +918,95 @@
         }
 
         /* ============================================================
+           FEATURED WORKS — 代表実績カード＋クライアント帯（REQ-04）
+           既存のゴールド細線・低彩度トーンを踏襲
+           ============================================================ */
+        .featured {
+            max-width: 1100px;
+            margin: 0 auto clamp(2.5rem, 5vw, 3.8rem);
+        }
+        .featured__grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: clamp(1rem, 2vw, 1.8rem);
+        }
+        .featured__card {
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--color-gold-light);
+            border-radius: 2px;
+            overflow: hidden;
+            background: transparent;
+            transition: border-color 0.4s ease, transform 0.5s var(--ease), box-shadow 0.5s ease;
+        }
+        .featured__card:hover {
+            border-color: var(--color-gold);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
+        }
+        .featured__thumb {
+            aspect-ratio: 16 / 9;
+            overflow: hidden;
+            background-color: rgba(0, 0, 0, 0.03);
+        }
+        .featured__thumb img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            filter: grayscale(15%) contrast(1.02);
+            transition: transform 1.2s var(--ease), filter 0.6s ease;
+        }
+        .featured__card:hover .featured__thumb img {
+            transform: scale(1.06);
+            filter: grayscale(0%);
+        }
+        .featured__body {
+            padding: 1.1rem 1.2rem 1.3rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.55rem;
+            flex-grow: 1;
+        }
+        .featured__cat {
+            align-self: flex-start;
+            display: inline-block;
+            font-family: var(--font-label);
+            font-size: 0.56rem;
+            letter-spacing: 0.28em;
+            text-indent: 0.28em;
+            text-transform: uppercase;
+            color: var(--color-text);
+            background: var(--color-gold-light);
+            padding: 0.38em 0.8em;
+            border-radius: 2px;
+            font-weight: 400;
+        }
+        .featured__title {
+            font-family: var(--font-body);
+            font-size: 0.92rem;
+            line-height: 1.55;
+            color: var(--color-text);
+            flex-grow: 1;
+        }
+        .featured__year {
+            font-family: var(--font-futura);
+            font-size: 0.72rem;
+            letter-spacing: 0.12em;
+            color: var(--color-text-light);
+            display: flex;
+            align-items: center;
+            gap: 0.45em;
+        }
+        .featured__year::after {
+            content: '↗';
+            color: var(--color-gold);
+            font-size: 0.9em;
+            transition: transform 0.4s var(--ease);
+        }
+        .featured__card:hover .featured__year::after {
+            transform: translate(2px, -2px);
+        }
+
+        /* ============================================================
            CONTACT — コンタクトフォーム
            ============================================================ */
         #contact {
@@ -818,6 +1014,87 @@
             max-width: 800px;
             margin: 0 auto;
         }
+
+        /* Contact 補助のメール導線（アドレスは JS で組み立て） */
+        .contact-alt-mail {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-family: var(--font-body);
+            font-size: 0.92rem;
+            color: var(--color-text-light);
+        }
+        .contact-alt-mail .js-email {
+            color: var(--color-text);
+            font-weight: 400;
+            border-bottom: 1px solid var(--color-gold-light);
+            padding-bottom: 1px;
+            word-break: break-all;
+            user-select: all; /* クリックで一括選択でき、コピペしやすく */
+        }
+
+        /* ハニーポット：レイアウトに影響させず画面外へ隠す（display:none だと一部ボットに読まれるため） */
+        .hp-field {
+            position: absolute;
+            left: -9999px;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+        }
+
+        /* 送信前の確認モード */
+        .form-review { display: none; }
+        .contact-form.is-confirming .form-group { display: none; }
+        .contact-form.is-confirming .form-review { display: block; }
+        .form-review__note {
+            font-family: var(--font-body);
+            font-size: 0.9rem;
+            color: var(--color-text-light);
+            text-align: center;
+            margin-bottom: 1.8rem;
+        }
+        .form-review__list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+        .form-review__list > div {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+            padding-bottom: 1.2rem;
+            border-bottom: 1px solid var(--color-gold-light);
+        }
+        .form-review__list dt {
+            font-family: var(--font-label);
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            color: var(--color-text-light);
+        }
+        .form-review__list dd {
+            font-family: var(--font-body);
+            font-size: 1rem;
+            color: var(--color-text);
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        .form-actions {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.2rem;
+        }
+        .form-back-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-family: var(--font-label);
+            font-size: 0.75rem;
+            letter-spacing: 0.2em;
+            color: var(--color-text-light);
+            transition: color 0.3s ease;
+        }
+        .form-back-btn:hover { color: var(--color-text); }
+        .form-back-btn[hidden] { display: none; }
 
         .contact-form {
             display: flex;
@@ -858,7 +1135,8 @@
         }
 
         .form-textarea {
-            resize: vertical;
+            resize: none;        /* 入力量に応じて自動で高さを広げるため手動リサイズは無効化 */
+            overflow: hidden;    /* 自動拡大中にスクロールバーを出さない */
             min-height: 120px;
         }
 
@@ -934,6 +1212,26 @@
             gap: 1.1rem;
             margin-bottom: clamp(2.5rem, 5vw, 4rem);
             text-align: center;
+            position: relative;
+            isolation: isolate; /* ゴーストナンバーを見出しの背面に閉じ込める */
+        }
+        /* ゴーストナンバー：超大サイズ・極薄のイタリック数字を背面に敷く */
+        .section-opener::before {
+            content: attr(data-num);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -52%);
+            z-index: -1;
+            font-family: var(--font-hero);
+            font-style: italic;
+            font-weight: 300;
+            font-size: clamp(7rem, 20vw, 15rem);
+            line-height: 1;
+            color: var(--color-text);
+            opacity: 0.05;
+            pointer-events: none;
+            transition: color 1s ease, opacity 1s ease;
         }
         .section-opener__meta {
             display: inline-flex;
@@ -961,15 +1259,7 @@
             letter-spacing: 0.06em;
             line-height: 1;
             color: var(--color-text);
-        }
-        .section-opener__sub {
-            font-family: var(--font-label);
-            font-size: 0.7rem;
-            letter-spacing: 0.35em;
-            text-transform: uppercase;
-            color: var(--color-text-light);
-            font-weight: 300;
-            margin-top: -0.3rem;
+            transition: color 1s ease;
         }
 
         /* Footer */
@@ -1163,6 +1453,20 @@
             }
             .gallery-title { font-size: 1.4rem; }
             .slideshow-track { grid-template-columns: 1fr; gap: 1rem; }
+            /* モバイルは1列・標準比率に統一（マガジン・リズムを解除） */
+            .slideshow-track .slide,
+            .slideshow-track .slide:nth-child(7n+1),
+            .slideshow-track .slide:nth-child(7n+2),
+            .slideshow-track .slide:nth-child(7n+3),
+            .slideshow-track .slide:nth-child(7n+4),
+            .slideshow-track .slide:nth-child(7n+5),
+            .slideshow-track .slide:nth-child(7n+6),
+            .slideshow-track .slide:nth-child(7n) {
+                grid-column: 1 / -1;
+                aspect-ratio: 3 / 2;
+            }
+
+            .featured__grid { grid-template-columns: 1fr; gap: 1.2rem; }
 
             .chron__tabs { justify-content: flex-start; }
             .chron__year {
@@ -1177,10 +1481,18 @@
                 grid-template-columns: 1fr;
                 gap: 0.4rem;
             }
-            .chron__group-label { padding-top: 0; }
+            .chron__group-label { margin-top: 0.2rem; }
 
             footer { flex-direction: column; gap: 2rem; text-align: center; }
         }
+
+        /* ============================================================
+           PC 視認性向上：広い画面ではルート基準サイズを引き上げ、
+           rem ベースの本文・余白を比率を保ったまま一括で拡大する
+           （見出しは vw 基準のためほぼ変化せず、間延びしない）
+           ============================================================ */
+        @media (min-width: 1024px) { html { font-size: 18px; } }
+        @media (min-width: 1440px) { html { font-size: 19px; } }
     </style>
 </head>
 <body>
@@ -1188,6 +1500,8 @@
     <div class="grain-overlay"></div>
 
     <nav>
+        <a href="#hero" class="nav-logo" id="nav-logo" aria-label="ページトップへ戻る">Yoshihiro Abiko</a>
+
         <div class="hamburger" id="hamburger">
             <span></span>
             <span></span>
@@ -1206,14 +1520,14 @@
     <main>
         <section id="hero">
             <div class="hero-bg-container" id="hero-bg-container">
-                <div class="hero-bg is-active" style="background-image: url('https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765100/th_A7V04515_3_futpdw.jpg');"></div>
-                <div class="hero-bg" style="background-image: url('https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765097/th_A7V04945_n2hxgm.jpg');"></div>
-                <div class="hero-bg" style="background-image: url('https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765093/th_DJI_20250505105945_0211_D_AIR3_co8fnt.jpg');"></div>
-                <div class="hero-bg" style="background-image: url('https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765091/th_DSC02965-Edit-2_2_p293h2.jpg');"></div>
-                <div class="hero-bg" style="background-image: url('https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765091/th_DSC04576-Edit-2_4_fll931.jpg');"></div>
-                <div class="hero-bg" style="background-image: url('https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765282/th_A7V03501_bonft6.jpg');"></div>
-                <div class="hero-bg" style="background-image: url('https://res.cloudinary.com/dqubrs4d3/image/upload/v1776836358/UnknownCamera_UnknownLens_UnknownDate_A7V03651_w2zrla.jpg');"></div>
-                <div class="hero-bg" style="background-image: url('https://res.cloudinary.com/dqubrs4d3/image/upload/v1776836421/th__d5bupe.jpg');"></div>
+                <div class="hero-bg is-active" style="background-image: url('https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_1920/v1776765100/th_A7V04515_3_futpdw.jpg');"></div>
+                <div class="hero-bg" style="background-image: url('https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_1920/v1776765097/th_A7V04945_n2hxgm.jpg');"></div>
+                <div class="hero-bg" style="background-image: url('https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_1920/v1776765093/th_DJI_20250505105945_0211_D_AIR3_co8fnt.jpg');"></div>
+                <div class="hero-bg" style="background-image: url('https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_1920/v1776765091/th_DSC02965-Edit-2_2_p293h2.jpg');"></div>
+                <div class="hero-bg" style="background-image: url('https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_1920/v1776765091/th_DSC04576-Edit-2_4_fll931.jpg');"></div>
+                <div class="hero-bg" style="background-image: url('https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_1920/v1776765282/th_A7V03501_bonft6.jpg');"></div>
+                <div class="hero-bg" style="background-image: url('https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_1920/v1776836358/UnknownCamera_UnknownLens_UnknownDate_A7V03651_w2zrla.jpg');"></div>
+                <div class="hero-bg" style="background-image: url('https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_1920/v1776836421/th__d5bupe.jpg');"></div>
                 <div class="hero-overlay"></div>
             </div>
 
@@ -1221,6 +1535,7 @@
                 <div class="hero-title-wrapper fade-elem">
                     <h1 class="hero-title">Yoshihiro Abiko</h1>
                     <span class="hero-subtitle">photography</span>
+                    <p class="hero-meta fade-elem" style="transition-delay: 0.4s;">Kamifurano, Hokkaido — Landscape / Wildlife</p>
                 </div>
             </div>
 
@@ -1230,7 +1545,7 @@
             </div>
         </section>
 
-        <!-- NEWS -->
+        <!-- NEWS: 実トピックが3件未満のため非表示（REQ-09）。再開時はコメントを外す
         <section id="news" class="fade-elem">
             <div class="news-container">
                 <div class="news-header">
@@ -1246,17 +1561,17 @@
                 </ul>
             </div>
         </section>
+        -->
 
         <!-- ABOUT -->
         <section id="about">
-            <header class="section-opener fade-elem">
-                <span class="section-opener__meta">01 &nbsp;／&nbsp; Profile</span>
+            <header class="section-opener fade-elem" data-num="01">
+                <span class="section-opener__meta">01 &nbsp;／&nbsp; プロフィール</span>
                 <h2 class="section-opener__title">Profile</h2>
-                <span class="section-opener__sub">プロフィール</span>
             </header>
             <div class="about-inner fade-elem">
                 <div class="about-image-wrapper fade-elem" style="transition-delay: 0.2s;">
-                    <img src="http://biei-kamifurano.com/wp-content/uploads/2026/01/IMG_2200-e1767625027669.jpg" alt="Yoshihiro Abiko Profile" class="profile-img">
+                    <img src="https://biei-kamifurano.com/wp-content/uploads/2026/01/IMG_2200-e1767625027669.jpg" alt="Yoshihiro Abiko Profile" class="profile-img">
                 </div>
 
                 <div class="about-text fade-elem">
@@ -1297,10 +1612,9 @@
 
         <!-- GALLERY -->
         <section id="gallery">
-            <header class="section-opener fade-elem">
-                <span class="section-opener__meta">02 &nbsp;／&nbsp; Gallery</span>
+            <header class="section-opener fade-elem" data-num="02">
+                <span class="section-opener__meta">02 &nbsp;／&nbsp; ギャラリー</span>
                 <h2 class="section-opener__title">Gallery</h2>
-                <span class="section-opener__sub">ギャラリー</span>
             </header>
 
             <ul class="gallery-list">
@@ -1311,44 +1625,44 @@
                             <h3 class="gallery-title">LANDSCAPE <span style="font-family: var(--font-label); font-size: 0.5em; letter-spacing: 0.1em; color: var(--color-text-light); vertical-align: middle;">- Kamifurano -</span></h3>
                         </div>
                         <div class="gallery-header-thumb">
-                            <img src="http://biei-kamifurano.com/wp-content/uploads/2026/03/7R509770.jpg" alt="Kamifurano Thumbnail">
+                            <img src="https://biei-kamifurano.com/wp-content/uploads/2026/03/7R509770.jpg" alt="Kamifurano Thumbnail">
                         </div>
                     </div>
                     <div class="gallery-slideshow">
                         <div class="slideshow-track random-track" id="track-kamifurano">
-                            <div class="slide"><img src="http://biei-kamifurano.com/wp-content/uploads/2024/02/A1_06374-Edit-scaled.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
-                            <div class="slide"><img src="http://biei-kamifurano.com/wp-content/uploads/2024/02/DSCF1481-Edit-scaled.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
-                            <div class="slide"><img src="http://biei-kamifurano.com/wp-content/uploads/2026/04/A7V04945.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765303/th_7R509022_tslyvi.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765303/th_7R508311-Enhanced-NR_2_pixdod.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765304/th_7R508221-Edit_ifotdu.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765305/th_7R507479_n529vw.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765304/th_7R508257_f7heoj.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765301/th_A1_00956_2_lofqst.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765300/th_A1_01349_gfz781.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765298/th_A1_02905_qmeyqw.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765297/th_A1_02685_2_o8ncmx.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765297/th_A1_02212-Edit_2_nal1g7.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765294/th_A1_04604-2_ioq9xf.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765293/th_A1_05230_efjblm.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765292/th_A1_06395-Edit_2_feyxtp.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765291/th_A1_07291_mot4zi.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765288/th_A1_09503-Enhanced-NR_8_x0odge.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765284/th_A7508759_penufg.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765100/th_A7V04966_y560zd.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765097/th_A7V05237_loiimb.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765095/th_DSC05676-Edit-3_k4sxqg.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765093/th_DSC03004-Edit_djxxxb.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765091/th_DSC02965-Edit-2_2_p293h2.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765089/th_DSCF0118-Edit_maw0fy.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765086/th_FE_24-70mm_F2.8_GM_II-20260114-A7V08184_mbr4qk.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765088/th_DSCF8583-Edit_iq52fw.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765085/th_Yoshihiro-Abiko--%E9%9C%A7%E3%81%AE%E9%80%9A%E3%82%8A%E9%81%93_chxqhk.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765083/th_P1010361_siohvj.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765080/th__DSC0062-Edit_hkloiy.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765081/th__DSC0341-Edit-2_2_nqsulr.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765079/th_phonto_revy8w.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765079/th__DSC8403-Edit_hctoxc.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
+                            <div class="slide"><img src="https://biei-kamifurano.com/wp-content/uploads/2024/02/A1_06374-Edit-scaled.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
+                            <div class="slide"><img src="https://biei-kamifurano.com/wp-content/uploads/2024/02/DSCF1481-Edit-scaled.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
+                            <div class="slide"><img src="https://biei-kamifurano.com/wp-content/uploads/2026/04/A7V04945.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765303/th_7R509022_tslyvi.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765303/th_7R508311-Enhanced-NR_2_pixdod.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765304/th_7R508221-Edit_ifotdu.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765305/th_7R507479_n529vw.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765304/th_7R508257_f7heoj.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765301/th_A1_00956_2_lofqst.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765300/th_A1_01349_gfz781.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765298/th_A1_02905_qmeyqw.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765297/th_A1_02685_2_o8ncmx.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765297/th_A1_02212-Edit_2_nal1g7.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765294/th_A1_04604-2_ioq9xf.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765293/th_A1_05230_efjblm.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765292/th_A1_06395-Edit_2_feyxtp.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765291/th_A1_07291_mot4zi.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765288/th_A1_09503-Enhanced-NR_8_x0odge.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765284/th_A7508759_penufg.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765100/th_A7V04966_y560zd.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765097/th_A7V05237_loiimb.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765095/th_DSC05676-Edit-3_k4sxqg.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765093/th_DSC03004-Edit_djxxxb.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765091/th_DSC02965-Edit-2_2_p293h2.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765089/th_DSCF0118-Edit_maw0fy.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765086/th_FE_24-70mm_F2.8_GM_II-20260114-A7V08184_mbr4qk.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765088/th_DSCF8583-Edit_iq52fw.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765085/th_Yoshihiro-Abiko--%E9%9C%A7%E3%81%AE%E9%80%9A%E3%82%8A%E9%81%93_chxqhk.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765083/th_P1010361_siohvj.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765080/th__DSC0062-Edit_hkloiy.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765081/th__DSC0341-Edit-2_2_nqsulr.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765079/th_phonto_revy8w.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765079/th__DSC8403-Edit_hctoxc.jpg" loading="lazy" alt="Landscape Kamifurano"></div>
                         </div>
                     </div>
                 </li>
@@ -1359,24 +1673,24 @@
                             <h3 class="gallery-title">LANDSCAPE <span style="font-family: var(--font-label); font-size: 0.5em; letter-spacing: 0.1em; color: var(--color-text-light); vertical-align: middle;">- Hokkaido -</span></h3>
                         </div>
                         <div class="gallery-header-thumb">
-                            <img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765092/th_DSC03657-Edit-2-Edit_7_lmczvw.jpg" alt="Hokkaido Thumbnail">
+                            <img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765092/th_DSC03657-Edit-2-Edit_7_lmczvw.jpg" alt="Hokkaido Thumbnail">
                         </div>
                     </div>
                     <div class="gallery-slideshow">
                         <div class="slideshow-track random-track" id="track-hokkaido">
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765310/th_10_pehn5h.jpg" loading="lazy" alt="Landscape Hokkaido"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765309/th_7R301042-Edit-2_fzotd0.jpg" loading="lazy" alt="Landscape Hokkaido"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765308/th_7R500886_2_jl8elh.jpg" loading="lazy" alt="Landscape Hokkaido"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765307/th_7R500721_o8pmox.jpg" loading="lazy" alt="Landscape Hokkaido"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765288/th_A1_09503-Enhanced-NR_8_x0odge.jpg" loading="lazy" alt="Landscape Hokkaido"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765288/th_A7403725_xwqbnj.jpg" loading="lazy" alt="Landscape Hokkaido"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765286/th_A1_04820_fpoitc.jpg" loading="lazy" alt="Landscape Hokkaido"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765092/th_DSC02352-Edit-3-3_3_f5vlow.jpg" loading="lazy" alt="Landscape Hokkaido"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765092/th_DSC03657-Edit-2-Edit_7_lmczvw.jpg" loading="lazy" alt="Landscape Hokkaido"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765087/th_IMG_4192_manpxl.jpg" loading="lazy" alt="Landscape Hokkaido"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765079/th__DSC4402-Edit_t2lfwm.jpg" loading="lazy" alt="Landscape Hokkaido"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765080/th__DSC7669-Edit_2_epqzhz.jpg" loading="lazy" alt="Landscape Hokkaido"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765083/th__A9_3789-Edit_3_tmfd4h.jpg" loading="lazy" alt="Landscape Hokkaido"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765310/th_10_pehn5h.jpg" loading="lazy" alt="Landscape Hokkaido"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765309/th_7R301042-Edit-2_fzotd0.jpg" loading="lazy" alt="Landscape Hokkaido"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765308/th_7R500886_2_jl8elh.jpg" loading="lazy" alt="Landscape Hokkaido"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765307/th_7R500721_o8pmox.jpg" loading="lazy" alt="Landscape Hokkaido"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765288/th_A1_09503-Enhanced-NR_8_x0odge.jpg" loading="lazy" alt="Landscape Hokkaido"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765288/th_A7403725_xwqbnj.jpg" loading="lazy" alt="Landscape Hokkaido"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765286/th_A1_04820_fpoitc.jpg" loading="lazy" alt="Landscape Hokkaido"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765092/th_DSC02352-Edit-3-3_3_f5vlow.jpg" loading="lazy" alt="Landscape Hokkaido"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765092/th_DSC03657-Edit-2-Edit_7_lmczvw.jpg" loading="lazy" alt="Landscape Hokkaido"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765087/th_IMG_4192_manpxl.jpg" loading="lazy" alt="Landscape Hokkaido"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765079/th__DSC4402-Edit_t2lfwm.jpg" loading="lazy" alt="Landscape Hokkaido"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765080/th__DSC7669-Edit_2_epqzhz.jpg" loading="lazy" alt="Landscape Hokkaido"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765083/th__A9_3789-Edit_3_tmfd4h.jpg" loading="lazy" alt="Landscape Hokkaido"></div>
                         </div>
                     </div>
                 </li>
@@ -1387,45 +1701,45 @@
                             <h3 class="gallery-title">WILDLIFE</h3>
                         </div>
                         <div class="gallery-header-thumb">
-                            <img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765310/th_3D2CE575-7DB8-40DE-AB83-371EE60AB307_ubgbsr.jpg" alt="Wildlife Thumbnail">
+                            <img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765310/th_3D2CE575-7DB8-40DE-AB83-371EE60AB307_ubgbsr.jpg" alt="Wildlife Thumbnail">
                         </div>
                     </div>
                     <div class="gallery-slideshow">
                         <div class="slideshow-track random-track" id="track-wildlife">
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765310/th_3D2CE575-7DB8-40DE-AB83-371EE60AB307_ubgbsr.jpg" loading="lazy" alt="Wildlife"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765310/th_7R304943_eqweqm.jpg" loading="lazy" alt="Wildlife"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765308/th_7R307092-Edit_2_lwvwrt.jpg" loading="lazy" alt="Wildlife"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765304/th_A1_00165_pephfs.jpg" loading="lazy" alt="Wildlife"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765303/th_7R509487-Enhanced-NR_nc9v8t.jpg" loading="lazy" alt="Wildlife"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765303/th_7R508986_mgez63.jpg" loading="lazy" alt="Wildlife"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765305/th_A1208480_iw5aog.jpg" loading="lazy" alt="Wildlife"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765301/th_A1_01021-Enhanced-NR_2_r2jbla.jpg" loading="lazy" alt="Wildlife"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765300/th_A1207707_g0f1mt.jpg" loading="lazy" alt="Wildlife"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765302/th_91C0ECEA-C121-483E-9B9B-61BA16370B62_sk266d.jpg" loading="lazy" alt="Wildlife"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765299/th_A1_01053_voy7tt.jpg" loading="lazy" alt="Wildlife"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765299/th_A1_01693-Edit-Edit_vq0wq6.jpg" loading="lazy" alt="Wildlife"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765296/th_A1_03452-2_qgjitn.jpg" loading="lazy" alt="Wildlife"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765296/th_A1_02820-Edit-4_asx1gx.jpg" loading="lazy" alt="Wildlife"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765296/th_A1_03319_yzzzas.jpg" loading="lazy" alt="Wildlife"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765295/th_A1_03397_vu9v0u.jpg" loading="lazy" alt="Wildlife"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765282/th_A7V03501_bonft6.jpg" loading="lazy" alt="Wildlife"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765100/th_A7V04515_3_futpdw.jpg" loading="lazy" alt="Wildlife"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765098/th_A7V09251-2_o6mo5l.jpg" loading="lazy" alt="Wildlife"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765098/th_A9_01920-Edit-3_9_mnfd9g.jpg" loading="lazy" alt="Wildlife"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765097/th_A9_02229-Edit-Edit_2_qp1br1.jpg" loading="lazy" alt="Wildlife"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765097/th_A9A02444-Edit_2_wztukh.jpg" loading="lazy" alt="Wildlife"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765096/th_A9_02729_irlabj.jpg" loading="lazy" alt="Wildlife"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765091/th_DSC08055-Edit-2_10_ad3yf0.jpg" loading="lazy" alt="Wildlife"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765091/th_DSC04576-Edit-2_4_fll931.jpg" loading="lazy" alt="Wildlife"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765090/th_DSC06931-Edit-Edit_4_pomrjc.jpg" loading="lazy" alt="Wildlife"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765087/th_IMG_4175_ixhibg.jpg" loading="lazy" alt="Wildlife"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765087/th_IMG_4186_4_oozvtq.jpg" loading="lazy" alt="Wildlife"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765084/th__A9_6118-Edit_2_qjeqe8.jpg" loading="lazy" alt="Wildlife"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765084/th__A9_2188_xtw66r.jpg" loading="lazy" alt="Wildlife"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765082/th__A9_7949-Edit_yjmimr.jpg" loading="lazy" alt="Wildlife"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765082/th__A9_9427_3_pyzg1x.jpg" loading="lazy" alt="Wildlife"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765081/th__DSC0573-Edit_2_jm3yrh.jpg" loading="lazy" alt="Wildlife"></div>
-                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/v1776765288/th_A1_08535-Edit-Edit_wzr0lz.jpg" loading="lazy" alt="Wildlife"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765310/th_3D2CE575-7DB8-40DE-AB83-371EE60AB307_ubgbsr.jpg" loading="lazy" alt="Wildlife"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765310/th_7R304943_eqweqm.jpg" loading="lazy" alt="Wildlife"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765308/th_7R307092-Edit_2_lwvwrt.jpg" loading="lazy" alt="Wildlife"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765304/th_A1_00165_pephfs.jpg" loading="lazy" alt="Wildlife"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765303/th_7R509487-Enhanced-NR_nc9v8t.jpg" loading="lazy" alt="Wildlife"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765303/th_7R508986_mgez63.jpg" loading="lazy" alt="Wildlife"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765305/th_A1208480_iw5aog.jpg" loading="lazy" alt="Wildlife"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765301/th_A1_01021-Enhanced-NR_2_r2jbla.jpg" loading="lazy" alt="Wildlife"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765300/th_A1207707_g0f1mt.jpg" loading="lazy" alt="Wildlife"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765302/th_91C0ECEA-C121-483E-9B9B-61BA16370B62_sk266d.jpg" loading="lazy" alt="Wildlife"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765299/th_A1_01053_voy7tt.jpg" loading="lazy" alt="Wildlife"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765299/th_A1_01693-Edit-Edit_vq0wq6.jpg" loading="lazy" alt="Wildlife"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765296/th_A1_03452-2_qgjitn.jpg" loading="lazy" alt="Wildlife"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765296/th_A1_02820-Edit-4_asx1gx.jpg" loading="lazy" alt="Wildlife"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765296/th_A1_03319_yzzzas.jpg" loading="lazy" alt="Wildlife"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765295/th_A1_03397_vu9v0u.jpg" loading="lazy" alt="Wildlife"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765282/th_A7V03501_bonft6.jpg" loading="lazy" alt="Wildlife"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765100/th_A7V04515_3_futpdw.jpg" loading="lazy" alt="Wildlife"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765098/th_A7V09251-2_o6mo5l.jpg" loading="lazy" alt="Wildlife"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765098/th_A9_01920-Edit-3_9_mnfd9g.jpg" loading="lazy" alt="Wildlife"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765097/th_A9_02229-Edit-Edit_2_qp1br1.jpg" loading="lazy" alt="Wildlife"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765097/th_A9A02444-Edit_2_wztukh.jpg" loading="lazy" alt="Wildlife"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765096/th_A9_02729_irlabj.jpg" loading="lazy" alt="Wildlife"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765091/th_DSC08055-Edit-2_10_ad3yf0.jpg" loading="lazy" alt="Wildlife"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765091/th_DSC04576-Edit-2_4_fll931.jpg" loading="lazy" alt="Wildlife"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765090/th_DSC06931-Edit-Edit_4_pomrjc.jpg" loading="lazy" alt="Wildlife"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765087/th_IMG_4175_ixhibg.jpg" loading="lazy" alt="Wildlife"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765087/th_IMG_4186_4_oozvtq.jpg" loading="lazy" alt="Wildlife"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765084/th__A9_6118-Edit_2_qjeqe8.jpg" loading="lazy" alt="Wildlife"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765084/th__A9_2188_xtw66r.jpg" loading="lazy" alt="Wildlife"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765082/th__A9_7949-Edit_yjmimr.jpg" loading="lazy" alt="Wildlife"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765082/th__A9_9427_3_pyzg1x.jpg" loading="lazy" alt="Wildlife"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765081/th__DSC0573-Edit_2_jm3yrh.jpg" loading="lazy" alt="Wildlife"></div>
+                            <div class="slide"><img src="https://res.cloudinary.com/dqubrs4d3/image/upload/f_auto,q_auto,w_800/v1776765288/th_A1_08535-Edit-Edit_wzr0lz.jpg" loading="lazy" alt="Wildlife"></div>
                         </div>
                     </div>
                 </li>
@@ -1434,18 +1748,64 @@
 
         <!-- CHRONICLE — 年単位タイムライン（タブで Work/Award/Exhibition をフィルタ） -->
         <section id="chronicle">
-            <header class="section-opener fade-elem">
-                <span class="section-opener__meta">03 &nbsp;／&nbsp; Works</span>
+            <header class="section-opener fade-elem" data-num="03">
+                <span class="section-opener__meta">03 &nbsp;／&nbsp; 仕事・受賞・展示</span>
                 <h2 class="section-opener__title">WORKS</h2>
-                <span class="section-opener__sub">仕事・受賞・展示など</span>
             </header>
+
+            <!-- FEATURED WORKS — 代表実績カード（REQ-04） -->
+            <div class="featured fade-elem">
+                <div class="featured__grid">
+                    <a class="featured__card" href="https://youtu.be/jRds_QA7-cU" target="_blank" rel="noopener">
+                        <div class="featured__thumb">
+                            <img src="https://img.youtube.com/vi/jRds_QA7-cU/maxresdefault.jpg" loading="lazy" alt="Sony α7 V Creators' Impressions のサムネイル">
+                        </div>
+                        <div class="featured__body">
+                            <span class="featured__cat">Work</span>
+                            <span class="featured__title">Sony α7 V 公式プロモーション担当</span>
+                            <span class="featured__year">2025</span>
+                        </div>
+                    </a>
+                    <a class="featured__card" href="https://dc.watch.impress.co.jp/docs/topic/special/2076924.html" target="_blank" rel="noopener">
+                        <div class="featured__thumb">
+                            <img src="https://dc.watch.impress.co.jp/img/dcw/list/2076/924/01.jpg" loading="lazy" alt="ソニー写真作品集『A Life』の表紙" style="object-position: center bottom;">
+                        </div>
+                        <div class="featured__body">
+                            <span class="featured__cat">Work</span>
+                            <span class="featured__title">写真作品集『A Life』掲載</span>
+                            <span class="featured__year">2025</span>
+                        </div>
+                    </a>
+                    <a class="featured__card" href="https://youtu.be/GuD9_K-zgYs" target="_blank" rel="noopener">
+                        <div class="featured__thumb">
+                            <img src="https://img.youtube.com/vi/GuD9_K-zgYs/maxresdefault.jpg" loading="lazy" alt="十勝岳ジオパーク PR 動画のサムネイル（十勝岳連峰の朝焼け空撮）">
+                        </div>
+                        <div class="featured__body">
+                            <span class="featured__cat">Work</span>
+                            <span class="featured__title">十勝岳ジオパーク PR 動画制作</span>
+                            <span class="featured__year">2024</span>
+                        </div>
+                    </a>
+                    <a class="featured__card" href="https://www.ybc.co.jp/tvprogram/kinpiyo2026/" target="_blank" rel="noopener">
+                        <div class="featured__thumb">
+                            <img src="https://www.ybc.co.jp/wp/wp-content/uploads/2026/02/94a7e07035974fca369ba1a8e8f0f9ae.jpg" loading="lazy" alt="雪原で撮影するフォトグラファー ／ YBC「金のピヨ卵」より">
+                        </div>
+                        <div class="featured__body">
+                            <span class="featured__cat">Work</span>
+                            <span class="featured__title">YBC 山形放送「金のピヨ卵」出演</span>
+                            <span class="featured__year">2026</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
             <header class="chron__head">
                 <div class="chron__tabs fade-elem" role="tablist" aria-label="Chronicle filter">
                     <button class="chron__tab is-active" data-filter="all" role="tab" aria-selected="true">
-                        All<span class="chron__tab-count">69</span>
+                        All<span class="chron__tab-count">70</span>
                     </button>
                     <button class="chron__tab" data-filter="work" role="tab" aria-selected="false">
-                        Work<span class="chron__tab-count">37</span>
+                        Work<span class="chron__tab-count">38</span>
                     </button>
                     <button class="chron__tab" data-filter="award" role="tab" aria-selected="false">
                         Award<span class="chron__tab-count">16</span>
@@ -1467,6 +1827,7 @@
                                 <li><a href="https://jp.pronews.com/news/202512260841709871.html" target="_blank" rel="noopener">【特別企画】α7 V 発売記念講座講師</a></li>
                                 <li><a href="https://www.sony.jp/ichigan/a-universe/news/1003/" target="_blank" rel="noopener">α Universe「フィールドで確信した α7 V という新しいベーシック」掲載</a></li>
                                 <li><a href="https://www.sony.jp/ichigan/a-universe/news/1004/" target="_blank" rel="noopener">CP+2026 ソニーブース登壇</a></li>
+                                <li><a href="https://www.ybc.co.jp/tvprogram/kinpiyo2026/" target="_blank" rel="noopener">YBC 山形放送「金のピヨ卵」出演</a></li>
                                 <li>作品集『A Life』発売記念イベント in ソニーストア札幌 登壇</li>
                             </ul>
                         </div>
@@ -1683,15 +2044,17 @@
 
         <!-- CONTACT — コンタクトフォーム -->
         <section id="contact" class="fade-elem">
-            <header class="section-opener fade-elem">
-                <span class="section-opener__meta">04 &nbsp;／&nbsp; Contact</span>
+            <header class="section-opener fade-elem" data-num="04">
+                <span class="section-opener__meta">04 &nbsp;／&nbsp; お問い合わせ</span>
                 <h2 class="section-opener__title">Contact</h2>
-                <span class="section-opener__sub">各種お問い合わせ</span>
             </header>
-            <p class="text-label" style="text-align: center; color: var(--color-text-light); margin-bottom: 2rem;">
-               写真使用など各種ご依頼・ご相談は、下記フォームからお願いいたします。
+            <p class="text-label" style="text-align: center; color: var(--color-text-light);">
+               写真使用など各種ご依頼・ご相談は、<br>下記フォームからお願いいたします。
             </p>
-            
+            <p class="contact-alt-mail">
+               もしくは <span class="js-email" data-user="yoshihiro.abiko14" data-domain="gmail.com" data-show="addr">メールアドレス</span> へご連絡ください。
+            </p>
+
             <form class="contact-form fade-elem" id="contact-form" style="transition-delay: 0.2s;" action="https://formspree.io/f/xvzdwdzg" method="POST">
                 <div class="form-group">
                     <label for="name" class="form-label">Name</label>
@@ -1705,8 +2068,27 @@
                     <label for="message" class="form-label">Message</label>
                     <textarea id="message" name="message" class="form-textarea" placeholder="お問い合わせ内容" required></textarea>
                 </div>
-                <button type="submit" class="submit-btn" id="submit-btn">SEND MESSAGE</button>
-                <p id="form-status" class="form-status"></p>
+                <!-- ハニーポット：人間には非表示。ボットが入力するとスパムとして弾く -->
+                <div class="hp-field" aria-hidden="true">
+                    <label for="_gotcha">この項目は空欄のままにしてください</label>
+                    <input type="text" id="_gotcha" name="_gotcha" tabindex="-1" autocomplete="off">
+                </div>
+
+                <!-- 送信前の確認表示（確認モードでのみ表示） -->
+                <div class="form-review" id="form-review">
+                    <p class="form-review__note">以下の内容で送信します。よろしければ「送信する」を押してください。</p>
+                    <dl class="form-review__list">
+                        <div><dt>Name</dt><dd id="review-name"></dd></div>
+                        <div><dt>Email</dt><dd id="review-email"></dd></div>
+                        <div><dt>Message</dt><dd id="review-message"></dd></div>
+                    </dl>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="submit-btn" id="submit-btn">SEND MESSAGE</button>
+                    <button type="button" class="form-back-btn" id="form-back-btn" hidden>← 内容を修正する</button>
+                </div>
+                <p id="form-status" class="form-status" role="status" aria-live="polite"></p>
             </form>
         </section>
     </main>
@@ -1725,10 +2107,10 @@
             <a href="https://www.youtube.com/@yoshihiro_abiko" target="_blank" rel="noopener" aria-label="YouTube">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33 2.78 2.78 0 0 0 1.94 2c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.33 29 29 0 0 0-.46-5.33z"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/></svg>
             </a>
-            <a href="https://note.com/your_note_handle" target="_blank" rel="noopener" aria-label="note">
+            <a href="https://note.com/yoshihiroabiko" target="_blank" rel="noopener" aria-label="note">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h10l4 4v14H6z"/><path d="M16 3v4h4"/><path d="M9 12h7M9 16h5"/></svg>
             </a>
-            <a href="mailto:yoshihiro.abiko14&#64;gmail.com" aria-label="Mail">
+            <a class="js-email" data-user="yoshihiro.abiko14" data-domain="gmail.com" href="#" aria-label="Mail">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
             </a>
         </div>
@@ -1748,6 +2130,13 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+
+            // メールアドレスの組み立て（HTMLソースにアドレス文字列を残さない迷惑メール対策）
+            document.querySelectorAll('.js-email').forEach(el => {
+                const addr = `${el.dataset.user}@${el.dataset.domain}`;
+                if (el.tagName === 'A') el.href = `mailto:${addr}`;
+                if (el.dataset.show === 'addr') el.textContent = addr;
+            });
 
             // 初回フェード
             setTimeout(() => {
@@ -1846,6 +2235,89 @@
                         hamburger.classList.remove('is-active');
                         navLinks.classList.remove('is-active');
                     });
+                });
+            }
+
+            // Contact フォーム：確認モード付き AJAX 送信（ページ遷移せず送信）
+            const contactForm = document.getElementById('contact-form');
+            const formStatus = document.getElementById('form-status');
+            const submitBtn = document.getElementById('submit-btn');
+            const formBackBtn = document.getElementById('form-back-btn');
+            if (contactForm && formStatus && submitBtn && formBackBtn) {
+                let formMode = 'edit'; // 'edit' → 'confirm'
+
+                const enterConfirm = () => {
+                    document.getElementById('review-name').textContent = document.getElementById('name').value;
+                    document.getElementById('review-email').textContent = document.getElementById('email').value;
+                    document.getElementById('review-message').textContent = document.getElementById('message').value;
+                    contactForm.classList.add('is-confirming');
+                    formBackBtn.hidden = false;
+                    submitBtn.textContent = '送信する';
+                    formStatus.classList.remove('is-visible', 'error');
+                    formStatus.textContent = '';
+                    formMode = 'confirm';
+                    document.getElementById('form-review').scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+                };
+
+                const backToEdit = () => {
+                    contactForm.classList.remove('is-confirming');
+                    formBackBtn.hidden = true;
+                    submitBtn.textContent = 'SEND MESSAGE';
+                    submitBtn.disabled = false;
+                    formMode = 'edit';
+                };
+
+                formBackBtn.addEventListener('click', backToEdit);
+
+                // メッセージ欄：入力量に応じて高さを自動拡大
+                const messageField = document.getElementById('message');
+                if (messageField) {
+                    const autoGrow = () => {
+                        messageField.style.height = 'auto';
+                        messageField.style.height = `${messageField.scrollHeight}px`;
+                    };
+                    messageField.addEventListener('input', autoGrow);
+                    // 送信後などのリセット時は高さを初期に戻す
+                    contactForm.addEventListener('reset', () => {
+                        requestAnimationFrame(() => { messageField.style.height = 'auto'; });
+                    });
+                }
+
+                contactForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+
+                    // 1段階目：入力チェック → 確認モードへ
+                    if (formMode === 'edit') {
+                        if (!contactForm.reportValidity()) return;
+                        enterConfirm();
+                        return;
+                    }
+
+                    // 2段階目：実送信
+                    submitBtn.disabled = true;
+                    formBackBtn.disabled = true;
+                    submitBtn.textContent = 'SENDING...';
+                    formStatus.classList.remove('is-visible', 'error');
+
+                    try {
+                        const response = await fetch(contactForm.action, {
+                            method: 'POST',
+                            body: new FormData(contactForm),
+                            headers: { 'Accept': 'application/json' }
+                        });
+                        if (!response.ok) throw new Error('送信エラー');
+                        formStatus.innerHTML = 'お問い合わせありがとうございます。<br>24時間以内にご返信いたします。';
+                        formStatus.classList.add('is-visible');
+                        contactForm.reset();
+                        backToEdit();
+                    } catch (err) {
+                        formStatus.textContent = '送信に失敗しました。時間をおいて再度お試しいただくか、メールにてご連絡ください。';
+                        formStatus.classList.add('is-visible', 'error');
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = '送信する';
+                    } finally {
+                        formBackBtn.disabled = false;
+                    }
                 });
             }
 
@@ -1968,7 +2440,7 @@
                     }
                 };
 
-                // アコーディオン + 背景色ホバー
+                // アコーディオン + 暗室モード
                 const gallerySection = document.getElementById('gallery');
                 allGalleryCategories.forEach(category => {
                     const header = category.querySelector('.gallery-item-header');
@@ -1993,24 +2465,14 @@
                             resetViewMore(c);
                         });
 
+                        // 展開中は暗室モード（炭色背景）、全て閉じたら解除
+                        gallerySection.classList.toggle('is-darkroom', !isActive);
+
                         if (!isActive) {
                             category.classList.add('is-active');
                             setTimeout(() => {
                                 window.scrollTo({ top: targetY, behavior: 'smooth' });
                             }, 50);
-                        }
-                    });
-
-                    category.addEventListener('mouseenter', () => {
-                        const hoverColor = category.getAttribute('data-color');
-                        if (hoverColor) gallerySection.style.backgroundColor = hoverColor;
-                    });
-                    category.addEventListener('mouseleave', () => {
-                        const activeCategory = document.querySelector('.gallery-category.is-active');
-                        if (activeCategory) {
-                            gallerySection.style.backgroundColor = activeCategory.getAttribute('data-color') || 'transparent';
-                        } else {
-                            gallerySection.style.backgroundColor = 'transparent';
                         }
                     });
                 });
